@@ -54,6 +54,16 @@
         </div>
     </nav>
 
+    <!-- Global Loading Overlay -->
+    <div id="globalLoadingScreen" class="fixed inset-0 bg-slate-50 z-[100] flex flex-col items-center justify-center transition-opacity duration-500">
+        <svg class="animate-spin h-12 w-12 text-blue-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <h2 class="text-xl font-bold text-slate-800">Loading Exam Data...</h2>
+        <p class="text-slate-500 mt-2 text-sm">Connecting to server</p>
+    </div>
+
     <main class="flex-grow flex items-center justify-center p-4">
         
         <!-- Screen 1: Registration Form -->
@@ -179,10 +189,10 @@
                 <!-- Tab Content: Settings & Questions -->
                 <div id="adminQuestionsTab" class="p-6 sm:p-8 block">
                     <!-- Notice about session state -->
-                    <div class="bg-blue-50 text-blue-800 p-4 rounded-lg mb-6 text-sm border border-blue-200 flex gap-3 items-start">
+                    <div class="bg-green-50 text-green-800 p-4 rounded-lg mb-6 text-sm border border-green-200 flex gap-3 items-start">
                         <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <div>
-                            <strong>Session Mode:</strong> Changes to settings and questions apply immediately to the current session but will reset upon page refresh.
+                            <strong>Cloud Sync Active:</strong> Changes to settings and questions are automatically saved to your Google Sheet and will be visible to all students immediately.
                         </div>
                     </div>
 
@@ -358,7 +368,8 @@
 
     <script>
         // --- CONFIGURATION ---
-      const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzl7fxhfd9X_THVzTkPWS4l7sMSfrY2oy0flul4mKTXbufjHo87cGDZHf2yE-EEXWv87A/exec";
+        // UPDATED URL BASED ON USER REQUEST
+      const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWFFHMVUu5OTF_E3_JyItr3rfgLT_XJfCEX1-S8syj8Mcu8yVYhUQMCujxjWXjLC5XKw/exec";
         
         // --- STATE VARIABLES ---
         let EXAM_TITLE = "Nursing Fundamentals Assessment";
@@ -439,6 +450,9 @@
         let timeRemaining = EXAM_TIME_MINUTES * 60;
         let timerInterval;
 
+        // --- NEW: CLOUD SYNC STATE ---
+        let isCloudSynced = false;
+
         // --- DOM ELEMENTS ---
         const screens = {
             registration: document.getElementById('registrationScreen'),
@@ -476,7 +490,40 @@
             document.getElementById('registrationSubtitle').innerText = `You will have ${EXAM_TIME_MINUTES} minutes to complete the test.`;
         }
 
-        updateClientUI();
+        // --- NEW: FETCH FROM GOOGLE SHEETS ON LOAD ---
+        function initApp() {
+            if (GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+                document.getElementById('globalLoadingScreen').classList.add('hidden');
+                updateClientUI();
+                return;
+            }
+
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.result === 'success' && data.config) {
+                        if (data.config.Title) EXAM_TITLE = data.config.Title;
+                        if (data.config.Instructions !== undefined) EXAM_INSTRUCTIONS = data.config.Instructions;
+                        if (data.config.Time) EXAM_TIME_MINUTES = parseInt(data.config.Time) || 15;
+                        if (data.config.Questions) {
+                            try {
+                                const parsed = JSON.parse(data.config.Questions);
+                                if (Array.isArray(parsed) && parsed.length > 0) {
+                                    questionsData = parsed;
+                                }
+                            } catch(e) { console.error("Could not parse questions", e); }
+                        }
+                    }
+                })
+                .catch(err => console.error("Error loading exam data:", err))
+                .finally(() => {
+                    updateClientUI();
+                    document.getElementById('globalLoadingScreen').style.opacity = '0';
+                    setTimeout(() => document.getElementById('globalLoadingScreen').classList.add('hidden'), 500);
+                });
+        }
+        
+        window.addEventListener('load', initApp);
 
         // --- STUDENT EXAM LOGIC ---
         document.getElementById('registrationForm').addEventListener('submit', function(e) {
@@ -601,6 +648,7 @@
             else rating = "Below Target (Fail)";
 
             const formData = new FormData();
+            formData.append('action', 'submitExam'); // NEW ACTION IDENTIFIER
             formData.append('name', studentData.name);
             formData.append('course', studentData.course);
             formData.append('year', studentData.year);
@@ -688,7 +736,47 @@
         });
 
         // --- ADMIN EXAM SETTINGS LOGIC ---
-        document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+        
+        // NEW: Cloud Sync function for Admin Settings & Questions
+        function syncExamSettingsToCloud(buttonElement, originalText) {
+            if (GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") return;
+            
+            if (buttonElement) {
+                buttonElement.innerHTML = `<svg class="animate-spin h-4 w-4 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...`;
+                buttonElement.disabled = true;
+            }
+
+            const formData = new FormData();
+            formData.append('action', 'saveSettings');
+            formData.append('title', EXAM_TITLE);
+            formData.append('instructions', EXAM_INSTRUCTIONS);
+            formData.append('time', EXAM_TIME_MINUTES);
+            formData.append('questions', JSON.stringify(questionsData));
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.result === 'success') {
+                    const msg = document.getElementById('settingsUpdateMsg');
+                    if(msg) {
+                        msg.classList.remove('hidden');
+                        setTimeout(() => msg.classList.add('hidden'), 2500);
+                    }
+                }
+            })
+            .catch(err => console.error("Failed to sync settings", err))
+            .finally(() => {
+                if (buttonElement) {
+                    buttonElement.innerHTML = originalText;
+                    buttonElement.disabled = false;
+                }
+            });
+        }
+
+        document.getElementById('saveSettingsBtn').addEventListener('click', function(e) {
             const newTitle = document.getElementById('adminTitleInput').value.trim();
             const newInstructions = document.getElementById('adminInstructionsInput').value.trim();
             const newTime = parseInt(document.getElementById('adminTimerInput').value);
@@ -698,10 +786,7 @@
             if(newTime > 0) EXAM_TIME_MINUTES = newTime;
 
             updateClientUI(); // Updates the UI instantly for the session
-
-            const msg = document.getElementById('settingsUpdateMsg');
-            msg.classList.remove('hidden');
-            setTimeout(() => msg.classList.add('hidden'), 2500);
+            syncExamSettingsToCloud(e.target, 'Save Settings');
         });
 
         // --- ADMIN TABS LOGIC ---
@@ -959,11 +1044,13 @@
             
             document.getElementById('adminModal').classList.add('hidden');
             renderAdminQuestions();
+            syncExamSettingsToCloud(document.getElementById('saveSettingsBtn'), 'Save Settings'); // Auto-sync after adding
         });
 
         function deleteQuestion(index) {
             questionsData.splice(index, 1);
             renderAdminQuestions();
+            syncExamSettingsToCloud(document.getElementById('saveSettingsBtn'), 'Save Settings'); // Auto-sync after deleting
         }
 
         // --- ANTI-CHEATING LOGIC ---
