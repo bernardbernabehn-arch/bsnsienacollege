@@ -950,7 +950,22 @@
             resultsArray.sort((a, b) => {
                 const getScoreValue = (scoreStr) => {
                     if(!scoreStr) return 0;
-                    return parseInt(scoreStr.toString().split('/')[0]) || 0;
+                    
+                    // Handle Google Sheets auto-formatting fractions like "5/6" into Dates
+                    let sStr = String(scoreStr);
+                    if (sStr.includes('T') && sStr.includes('Z')) {
+                       // Try to parse out what the date conversion ruined.
+                       // This happens when Google Sheets turns "5/6" into May 6th of the current year.
+                       const dateObj = new Date(sStr);
+                       if(!isNaN(dateObj)) {
+                           // The month is 0-indexed in JS, so add 1 to get the likely 'numerator'
+                           const num = dateObj.getMonth() + 1;
+                           return num; 
+                       }
+                       return 0; // fallback
+                    }
+
+                    return parseInt(sStr.split('/')[0]) || 0;
                 };
                 return getScoreValue(b.Score) - getScoreValue(a.Score);
             });
@@ -963,10 +978,27 @@
 
             tbody.innerHTML = '';
             resultsArray.forEach((row, index) => {
-                // Parse score details
-                const scoreParts = (row.Score || '0/1').split('/');
-                const correct = parseInt(scoreParts[0]) || 0;
-                const total = parseInt(scoreParts[1]) || 1;
+                // Parse score details, handling Google Sheets date conversions
+                let sStr = String(row.Score || '0/1');
+                let correct = 0;
+                let total = questionsData.length > 0 ? questionsData.length : 1; // Default to current total questions if unknown
+                
+                if (sStr.includes('T') && sStr.includes('Z')) {
+                     // Recovering the fraction from the Date object Google Sheets made
+                     const dateObj = new Date(sStr);
+                     if(!isNaN(dateObj)) {
+                         // The month (0-indexed) + 1 is usually the score (e.g., May -> 5)
+                         correct = dateObj.getMonth() + 1;
+                         // The date is usually the total questions (e.g., 6th -> 6)
+                         total = dateObj.getDate();
+                     }
+                     sStr = `${correct}/${total}`; // Reconstruct string for display
+                } else {
+                     const scoreParts = sStr.split('/');
+                     correct = parseInt(scoreParts[0]) || 0;
+                     total = parseInt(scoreParts[1]) || total;
+                }
+
                 const percentage = Math.round((correct / total) * 100);
 
                 totalPercentage += percentage;
@@ -992,7 +1024,7 @@
                             <div class="text-xs text-slate-400 mt-1">${dateStr}</div>
                         </td>
                         <td class="p-4 text-slate-600 text-sm font-medium">BSN ${row["Year Level"] || ''} - ${row.Section || ''}</td>
-                        <td class="p-4 font-black text-slate-800 text-lg">${row.Score || '0'}</td>
+                        <td class="p-4 font-black text-slate-800 text-lg">${sStr}</td>
                         <td class="p-4 font-bold ${percentage >= 75 ? 'text-blue-600' : 'text-slate-600'}">${percentage}%</td>
                         <td class="p-4">
                             <span class="px-3 py-1 rounded-full text-xs font-bold ${badgeColor}">
