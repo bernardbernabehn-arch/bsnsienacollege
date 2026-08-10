@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NCLEX Practice Examination</title>
+    <title>Siena College Taytay BSN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -18,6 +18,13 @@
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .shake { animation: shake 0.5s; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
@@ -26,12 +33,12 @@
         <div class="max-w-5xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                <h1 class="text-xl font-bold">NursingPrep Pro</h1>
+                <h1 class="text-xl font-bold">Siena College Taytay BSN</h1>
             </div>
             
             <div class="flex items-center gap-4">
                 <!-- Timer Display (Hidden initially) -->
-                <div id="timerDisplay" class="hidden bg-blue-800 px-4 py-2 rounded-full font-mono text-lg font-bold shadow-inner">
+                <div id="timerDisplay" class="hidden bg-blue-800 px-4 py-2 rounded-full font-mono text-lg font-bold shadow-inner transition-colors duration-300">
                     15:00
                 </div>
                 <!-- Admin Button -->
@@ -44,8 +51,9 @@
         
         <!-- Screen 1: Registration Form -->
         <div id="registrationScreen" class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full fade-in border border-slate-100">
-            <h2 class="text-2xl font-bold text-slate-800 mb-2">Student Registration</h2>
-            <p id="registrationSubtitle" class="text-slate-500 mb-6 text-sm">Please enter your details to begin the NCLEX practice exam. You will have 15 minutes to complete the test.</p>
+            <h2 id="registrationTitle" class="text-2xl font-bold text-slate-800 mb-2">Student Registration</h2>
+            <div id="registrationInstructions" class="text-slate-600 mb-2 text-sm bg-blue-50 p-3 rounded-lg border border-blue-100 hidden"></div>
+            <p id="registrationSubtitle" class="text-slate-500 mb-6 text-sm font-medium">You will have 15 minutes to complete the test.</p>
             
             <form id="registrationForm" class="space-y-4">
                 <div>
@@ -87,9 +95,9 @@
         <!-- Screen 2: Quiz Application -->
         <div id="examScreen" class="hidden w-full max-w-3xl fade-in my-8">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mb-6">
-                <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                    <h2 class="text-xl font-bold text-slate-800">NCLEX Assessment</h2>
-                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium" id="questionTracker">Question 1 of 5</span>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-slate-100 pb-4 gap-4">
+                    <h2 id="examTitleDisplay" class="text-xl font-bold text-slate-800">NCLEX Assessment</h2>
+                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap" id="questionTracker">Question 1 of 5</span>
                 </div>
                 
                 <div id="questionsContainer" class="space-y-8">
@@ -136,10 +144,10 @@
         <!-- Screen 4: Admin Login -->
         <div id="adminLoginScreen" class="hidden bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full fade-in border border-slate-100">
             <h2 class="text-2xl font-bold text-slate-800 mb-4">Admin Access</h2>
-            <p class="text-slate-500 mb-6 text-sm">Enter the administrator password to manage exam questions.</p>
+            <p class="text-slate-500 mb-6 text-sm">Enter the administrator password to manage exam questions and view results.</p>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                <input type="password" id="adminPassword" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter password">
+                <input type="password" id="adminPassword" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter password (default: 09163129437)">
             </div>
             <div id="adminError" class="hidden text-red-600 text-sm mb-4 bg-red-50 p-2 rounded border border-red-100">Incorrect password.</div>
             <div class="flex gap-2">
@@ -154,43 +162,57 @@
                 <!-- Admin Header & Tabs -->
                 <div class="bg-slate-50 border-b border-slate-200 px-6 sm:px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <h2 class="text-xl font-bold text-slate-800">Admin Dashboard</h2>
-                    <div class="flex gap-2">
-                        <button id="tabQuestionsBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Questions</button>
-                        <button id="tabResultsBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Student Results</button>
-                        <button id="exitAdminBtn" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors ml-4">Exit</button>
+                    <div class="flex gap-2 flex-wrap">
+                        <button id="tabQuestionsBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Settings & Questions</button>
+                        <button id="tabResultsBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Student Results Summary</button>
+                        <button id="exitAdminBtn" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors ml-auto sm:ml-4">Exit Admin</button>
                     </div>
                 </div>
 
-                <!-- Tab Content: Questions -->
+                <!-- Tab Content: Settings & Questions -->
                 <div id="adminQuestionsTab" class="p-6 sm:p-8 block">
-                    <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                        <h3 class="text-lg font-bold text-slate-800">Question Management</h3>
-                        <button id="addQuestionBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">+ Add Question</button>
-                    </div>
-                    
                     <!-- Notice about session state -->
                     <div class="bg-blue-50 text-blue-800 p-4 rounded-lg mb-6 text-sm border border-blue-200 flex gap-3 items-start">
                         <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <div>
-                            <strong>Session Mode:</strong> Changes made here will apply immediately to the quiz, but will reset if you refresh or close the page.
+                            <strong>Session Mode:</strong> Changes to settings and questions apply immediately to the current session but will reset upon page refresh.
                         </div>
                     </div>
 
-                    <!-- Exam Settings (Timer Configuration) -->
+                    <!-- Exam Settings (Title, Instructions, Timer) -->
                     <div class="mb-8 p-5 bg-slate-50 rounded-xl border border-slate-200">
-                        <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Exam Settings
-                        </h3>
-                        <div class="flex flex-wrap items-center gap-4">
-                            <label class="text-sm font-medium text-slate-700">Duration (Minutes):</label>
-                            <input type="number" id="adminTimerInput" min="1" max="180" class="w-24 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-                            <button id="saveTimerBtn" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Update Timer</button>
-                            <span id="timerUpdateMsg" class="text-green-600 text-sm font-medium hidden flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Saved!
-                            </span>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Exam Settings
+                            </h3>
+                            <button id="saveSettingsBtn" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Save Settings</button>
                         </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Exam Title</label>
+                                <input type="text" id="adminTitleInput" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white" placeholder="e.g., Midterm Examination">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Student Instructions (Optional)</label>
+                                <textarea id="adminInstructionsInput" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white" placeholder="e.g., Read each question carefully. No calculators allowed."></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Exam Duration (Minutes)</label>
+                                <input type="number" id="adminTimerInput" min="1" max="180" class="w-32 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            </div>
+                            
+                            <div id="settingsUpdateMsg" class="text-green-600 text-sm font-medium hidden flex items-center gap-1 mt-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Settings updated successfully!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                        <h3 class="text-lg font-bold text-slate-800">Question Bank</h3>
+                        <button id="addQuestionBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">+ Add Question</button>
                     </div>
 
                     <div id="adminQuestionsList" class="space-y-4">
@@ -199,48 +221,78 @@
                 </div>
 
                 <!-- Tab Content: Results Summary -->
-                <div id="adminResultsTab" class="p-6 sm:p-8 hidden">
-                    <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                        <h3 class="text-lg font-bold text-slate-800">Student Results</h3>
-                        <button id="refreshResultsBtn" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            Refresh Data
-                        </button>
+                <div id="adminResultsTab" class="p-6 sm:p-8 hidden bg-slate-50/50">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-slate-200 pb-4 gap-4">
+                        <h3 class="text-lg font-bold text-slate-800">Student Results Summary</h3>
+                        <div class="flex gap-2">
+                             <button id="mockResultsBtn" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                                Load Demo Data
+                            </button>
+                            <button id="refreshResultsBtn" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Sync from Google Sheets
+                            </button>
+                        </div>
                     </div>
 
-                    <div id="resultsLoadingState" class="text-center py-10 text-slate-500 flex flex-col items-center justify-center">
+                    <!-- Summary Dashboard Cards -->
+                    <div id="summaryDashboard" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 hidden">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Total Students</p>
+                            <p id="statTotalStudents" class="text-2xl font-bold text-slate-800">0</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Average Score</p>
+                            <p id="statAvgScore" class="text-2xl font-bold text-blue-600">0%</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Highest Score</p>
+                            <p id="statHighestScore" class="text-2xl font-bold text-green-600">0%</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Lowest Score</p>
+                            <p id="statLowestScore" class="text-2xl font-bold text-red-600">0%</p>
+                        </div>
+                    </div>
+
+                    <div id="resultsLoadingState" class="text-center py-10 text-slate-500 flex flex-col items-center justify-center hidden">
                         <svg class="animate-spin mb-3 h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Fetching results from Google Sheets...
+                        Fetching results...
                     </div>
 
-                    <div id="resultsDataState" class="hidden overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 border-y border-slate-200">
-                                    <th class="p-3 font-semibold text-slate-700 text-sm">Student</th>
-                                    <th class="p-3 font-semibold text-slate-700 text-sm">Course/Sec</th>
-                                    <th class="p-3 font-semibold text-slate-700 text-sm">Score</th>
-                                    <th class="p-3 font-semibold text-slate-700 text-sm">Rating</th>
-                                    <th class="p-3 font-semibold text-slate-700 text-sm">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody id="resultsTableBody" class="divide-y divide-slate-100">
-                                <!-- Results rows will be injected here -->
-                            </tbody>
-                        </table>
-                        <div id="noResultsMsg" class="hidden text-center py-8 text-slate-500 text-sm">
-                            No exam results found yet.
+                    <div id="resultsDataState" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 border-b border-slate-200">
+                                        <th class="p-4 font-semibold text-slate-700 text-sm w-12 text-center">Rank</th>
+                                        <th class="p-4 font-semibold text-slate-700 text-sm">Student Name</th>
+                                        <th class="p-4 font-semibold text-slate-700 text-sm">Details</th>
+                                        <th class="p-4 font-semibold text-slate-700 text-sm">Score</th>
+                                        <th class="p-4 font-semibold text-slate-700 text-sm">Percentage</th>
+                                        <th class="p-4 font-semibold text-slate-700 text-sm">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultsTableBody" class="divide-y divide-slate-100">
+                                    <!-- Results rows will be injected here, sorted highest to lowest -->
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
+                    
+                    <div id="noResultsMsg" class="hidden text-center py-12 bg-white rounded-xl border border-slate-200 text-slate-500 text-sm">
+                        <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        No exam results to display.<br>Use "Load Demo Data" to test the summary view.
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Admin Question Form Modal -->
-        <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/60 flex items-center justify-center p-4 z-50 fade-in">
+        <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/60 flex items-center justify-center p-4 z-[60] fade-in backdrop-blur-sm">
             <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <h2 id="modalTitle" class="text-xl font-bold text-slate-800 mb-4">Add New Question</h2>
                 <div class="space-y-4">
@@ -248,7 +300,7 @@
                         <label class="block text-sm font-medium text-slate-700 mb-1">Question Text</label>
                         <textarea id="editQText" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter the scenario or question..."></textarea>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Option 1</label>
                             <input type="text" id="editOpt0" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
@@ -268,14 +320,14 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Correct Answer</label>
-                        <select id="editCorrect" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-                            <option value="0">Option 1</option>
-                            <option value="1">Option 2</option>
-                            <option value="2">Option 3</option>
-                            <option value="3">Option 4</option>
+                        <select id="editCorrect" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white font-medium text-green-700">
+                            <option value="0">Option 1 is correct</option>
+                            <option value="1">Option 2 is correct</option>
+                            <option value="2">Option 3 is correct</option>
+                            <option value="3">Option 4 is correct</option>
                         </select>
                     </div>
-                    <div class="flex justify-end gap-3 mt-8">
+                    <div class="flex justify-end gap-3 mt-8 pt-4 border-t border-slate-100">
                         <button id="closeModalBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-medium px-6 py-2 rounded-lg transition-colors">Cancel</button>
                         <button id="saveQuestionBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-colors">Save Question</button>
                     </div>
@@ -287,13 +339,14 @@
 
     <script>
         // --- CONFIGURATION ---
-        // REPLACE THIS URL with your deployed Google Apps Script Web App URL!
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxBSUyI4RfTtQJmRjBVmokBLUxnYIihrb8lumwum04GwOfO9LYGLdKD4DbJKw5W5v9N1w/exec"; 
+        const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE"; 
         
-        let EXAM_TIME_MINUTES = 15; // Changed to 'let' so Admin can update it
+        // --- STATE VARIABLES ---
+        let EXAM_TITLE = "Nursing Fundamentals Assessment";
+        let EXAM_INSTRUCTIONS = "Please read each question carefully and select the best answer. No calculators or outside resources are permitted.";
+        let EXAM_TIME_MINUTES = 15;
         const ADMIN_PASS = "09163129437";
         
-        // NCLEX-style questions database (changed to 'let' so admin can update it)
         let questionsData = [
             {
                 id: 1,
@@ -304,7 +357,7 @@
                     "Notify the healthcare provider.",
                     "Obtain a urine specimen to check for hematuria."
                 ],
-                correctAnswer: 1 // Index 1 is correct (Stop the transfusion)
+                correctAnswer: 1 
             },
             {
                 id: 2,
@@ -315,7 +368,7 @@
                     "A 32-year-old with asthma requesting an albuterol breathing treatment.",
                     "A 70-year-old with pneumonia who is suddenly confused and restless."
                 ],
-                correctAnswer: 3 // Sudden confusion/restlessness indicates hypoxia
+                correctAnswer: 3 
             },
             {
                 id: 3,
@@ -326,7 +379,7 @@
                     "Digoxin level 1.2 ng/mL",
                     "Fasting blood glucose 105 mg/dL"
                 ],
-                correctAnswer: 0 // Hypokalemia increases risk for digoxin toxicity
+                correctAnswer: 0 
             },
             {
                 id: 4,
@@ -337,7 +390,7 @@
                     "Administer 1 mg of glucagon intramuscularly.",
                     "Provide 4 ounces of orange juice."
                 ],
-                correctAnswer: 2 // Client is unresponsive; cannot take oral fluids. Glucagon is appropriate. Checking glucose delays emergency treatment if already unresponsive with classic signs. (Wait, actually standard practice is check blood sugar if rapid, but if protocols dictate emergency, glucagon. Let's use check blood glucose as a distracter, but administer IM glucagon is standard for unresponsive severe hypoglycemia). *Adjusted for strict NCLEX standard: Assessment is often first unless emergency dictates intervention.* Let's stick with Administer Glucagon as the life-saving priority for unresponsive.
+                correctAnswer: 2
             },
             {
                 id: 5,
@@ -348,23 +401,21 @@
                     "Take the medication on an empty stomach.",
                     "Expect severe tremors as a normal side effect."
                 ],
-                correctAnswer: 0 // Lithium competes with sodium; consistent sodium is required to prevent toxicity.
+                correctAnswer: 0 
             },
-            // ADD YOUR NEW QUESTIONS HERE:
             {
                 id: 6,
-                text: "Type your new NCLEX question here. For example: What is the normal range for fasting blood glucose?",
+                text: "What is the normal range for fasting blood glucose in an adult?",
                 options: [
                     "40 - 60 mg/dL",
-                    "70 - 99 mg/dL", // This will be the correct answer (Index 1)
+                    "70 - 99 mg/dL", 
                     "100 - 125 mg/dL",
                     "126 - 140 mg/dL"
                 ],
-                correctAnswer: 1 // Remember: 0 is the first option, 1 is the second, 2 is the third, 3 is the fourth.
+                correctAnswer: 1 
             }
         ];
 
-        // --- STATE VARIABLES ---
         let studentData = {};
         let timeRemaining = EXAM_TIME_MINUTES * 60;
         let timerInterval;
@@ -378,17 +429,30 @@
             adminDashboard: document.getElementById('adminDashboardScreen')
         };
         const timerDisplay = document.getElementById('timerDisplay');
-        
-        let editingQuestionIndex = -1; // -1 means we are adding a new question
-        
-        // Initial setup for text
-        updateRegistrationSubtitle();
+        let editingQuestionIndex = -1;
 
-        function updateRegistrationSubtitle() {
-            document.getElementById('registrationSubtitle').innerText = `Please enter your details to begin the NCLEX practice exam. You will have ${EXAM_TIME_MINUTES} minutes to complete the test.`;
+        // --- INITIALIZATION ---
+        // Initialize dynamic text on load
+        function updateClientUI() {
+            // Update Title
+            document.getElementById('registrationTitle').innerText = EXAM_TITLE;
+            document.getElementById('examTitleDisplay').innerText = EXAM_TITLE;
+            
+            // Update Instructions
+            const instEl = document.getElementById('registrationInstructions');
+            if(EXAM_INSTRUCTIONS.trim() !== "") {
+                instEl.innerText = EXAM_INSTRUCTIONS;
+                instEl.classList.remove('hidden');
+            } else {
+                instEl.classList.add('hidden');
+            }
+            
+            document.getElementById('registrationSubtitle').innerText = `You will have ${EXAM_TIME_MINUTES} minutes to complete the test.`;
         }
-        
-        // Handle Registration
+
+        updateClientUI();
+
+        // --- STUDENT EXAM LOGIC ---
         document.getElementById('registrationForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -400,15 +464,12 @@
                 section: document.getElementById('section').value
             };
 
-            // Set the timer dynamically based on current configuration
             timeRemaining = EXAM_TIME_MINUTES * 60;
             
-            // Transition to Exam Screen
             screens.registration.classList.add('hidden');
             screens.exam.classList.remove('hidden');
             timerDisplay.classList.remove('hidden');
             
-            // Reset UI for timer safely
             timerDisplay.classList.remove('bg-red-600', 'animate-pulse');
             timerDisplay.classList.add('bg-blue-800');
 
@@ -432,32 +493,28 @@
         function updateTimerDisplay() {
             const minutes = Math.floor(timeRemaining / 60);
             const seconds = timeRemaining % 60;
-            
-            // Format to MM:SS
             const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             timerDisplay.innerText = formattedTime;
 
-            // Visual warning when time is low (< 3 minutes)
-            if (timeRemaining < 180) {
+            if (timeRemaining < 180 && !timerDisplay.classList.contains('bg-red-600')) {
                 timerDisplay.classList.remove('bg-blue-800');
                 timerDisplay.classList.add('bg-red-600', 'animate-pulse');
             }
         }
 
-
         function renderQuestions() {
             const container = document.getElementById('questionsContainer');
-            container.innerHTML = ''; // Clear container
+            container.innerHTML = ''; 
 
             questionsData.forEach((q, index) => {
                 const questionHTML = `
-                    <div class="question-block" data-question="${index}">
-                        <h3 class="text-lg font-medium text-slate-800 mb-4">
-                            <span class="font-bold mr-1">${index + 1}.</span> ${q.text}
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 mb-6">
+                        <h3 class="text-lg font-medium text-slate-800 mb-4 leading-relaxed">
+                            <span class="font-bold text-blue-600 mr-2">${index + 1}.</span> ${q.text}
                         </h3>
-                        <div class="space-y-3 pl-5">
+                        <div class="space-y-3 pl-2 sm:pl-6">
                             ${q.options.map((opt, optIndex) => `
-                                <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors ${index === 0 ? '' : ''}">
+                                <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-white hover:border-blue-300 hover:shadow-sm transition-all bg-white">
                                     <input type="radio" name="question_${index}" value="${optIndex}" class="mt-1 text-blue-600 focus:ring-blue-500 w-4 h-4">
                                     <span class="text-slate-700">${opt}</span>
                                 </label>
@@ -472,20 +529,20 @@
         }
 
         document.getElementById('submitExamBtn').addEventListener('click', () => {
-            // Check if all questions are answered
             const unanswered = questionsData.some((_, index) => {
                 return !document.querySelector(`input[name="question_${index}"]:checked`);
             });
 
             if (unanswered) {
-                // Using custom modal/UI instead of alert()
                 const btn = document.getElementById('submitExamBtn');
                 const originalText = btn.innerHTML;
                 btn.innerHTML = `<span class="text-red-200">Please answer all questions</span>`;
                 btn.classList.add('bg-red-600', 'shake');
+                btn.classList.remove('bg-green-600', 'hover:bg-green-700');
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.classList.remove('bg-red-600', 'shake');
+                    btn.classList.add('bg-green-600', 'hover:bg-green-700');
                 }, 2000);
                 return;
             }
@@ -494,16 +551,13 @@
         });
 
         function autoSubmitExam() {
-            // Visual notification in UI rather than alert
             timerDisplay.innerText = "TIME UP";
             processExamSubmission();
         }
 
-
         function processExamSubmission() {
             clearInterval(timerInterval);
             
-            // Calculate Score
             let score = 0;
             questionsData.forEach((q, index) => {
                 const selected = document.querySelector(`input[name="question_${index}"]:checked`);
@@ -515,16 +569,11 @@
             const maxScore = questionsData.length;
             const percentage = (score / maxScore) * 100;
             
-            // Determine Rating
             let rating = "";
             if (percentage >= 80) rating = "Excellent Clinical Judgement (Pass)";
             else if (percentage >= 60) rating = "Average - Review Needed (Pass)";
             else rating = "Below Target (Fail)";
 
-            const timeUsed = (EXAM_TIME_MINUTES * 60) - timeRemaining;
-            const timeUsedString = `${Math.floor(timeUsed / 60)}m ${timeUsed % 60}s`;
-
-            // Prepare Payload for Google Sheets
             const formData = new FormData();
             formData.append('name', studentData.name);
             formData.append('course', studentData.course);
@@ -534,7 +583,6 @@
             formData.append('rating', rating);
             formData.append('timeRemaining', timerDisplay.innerText);
 
-            // Update UI to Results Screen
             screens.exam.classList.add('hidden');
             timerDisplay.classList.add('hidden');
             screens.result.classList.remove('hidden');
@@ -542,22 +590,15 @@
             document.getElementById('finalScoreDisplay').innerText = `${score}/${maxScore}`;
             document.getElementById('ratingDisplay').innerText = rating;
             
-            if (percentage >= 60) {
-                document.getElementById('ratingDisplay').classList.add('text-green-600');
-            } else {
-                document.getElementById('ratingDisplay').classList.add('text-red-600');
-            }
-            
+            document.getElementById('ratingDisplay').className = "text-lg font-semibold mb-1 " + (percentage >= 60 ? 'text-green-600' : 'text-red-600');
             document.getElementById('timeRemainingDisplay').innerText = `Time Remaining on clock: ${timerDisplay.innerText}`;
 
-            // Send to Google Sheets
             sendDataToGoogleSheets(formData);
         }
 
         function sendDataToGoogleSheets(formData) {
             const statusUI = document.getElementById('syncStatus');
             
-            // If the user hasn't replaced the URL, we simulate a successful save for the demo.
             if (GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
                 setTimeout(() => {
                     statusUI.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span class="text-green-600">Saved successfully (Demo Mode)</span>`;
@@ -565,7 +606,6 @@
                 return;
             }
 
-            // Actual Fetch Request to Google Apps Script
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 body: formData
@@ -584,9 +624,7 @@
             });
         }
 
-        // --- ADMIN DASHBOARD LOGIC ---
-
-        // Open Admin Login
+        // --- ADMIN LOGIC ---
         document.getElementById('navAdminBtn').addEventListener('click', () => {
             Object.values(screens).forEach(screen => screen?.classList.add('hidden'));
             screens.adminLogin.classList.remove('hidden');
@@ -594,7 +632,53 @@
             document.getElementById('adminError').classList.add('hidden');
         });
 
-        // Tab Switching Logic
+        document.getElementById('cancelAdminBtn').addEventListener('click', () => {
+            screens.adminLogin.classList.add('hidden');
+            screens.registration.classList.remove('hidden');
+        });
+
+        document.getElementById('loginAdminBtn').addEventListener('click', () => {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === ADMIN_PASS) {
+                screens.adminLogin.classList.add('hidden');
+                screens.adminDashboard.classList.remove('hidden');
+                
+                // Populate current settings in admin panel
+                document.getElementById('adminTitleInput').value = EXAM_TITLE;
+                document.getElementById('adminInstructionsInput').value = EXAM_INSTRUCTIONS;
+                document.getElementById('adminTimerInput').value = EXAM_TIME_MINUTES;
+                
+                renderAdminQuestions();
+            } else {
+                document.getElementById('adminError').classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('exitAdminBtn').addEventListener('click', () => {
+            screens.adminDashboard.classList.add('hidden');
+            screens.registration.classList.remove('hidden');
+            updateClientUI();
+            renderQuestions(); 
+        });
+
+        // --- ADMIN EXAM SETTINGS LOGIC ---
+        document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+            const newTitle = document.getElementById('adminTitleInput').value.trim();
+            const newInstructions = document.getElementById('adminInstructionsInput').value.trim();
+            const newTime = parseInt(document.getElementById('adminTimerInput').value);
+
+            if(newTitle) EXAM_TITLE = newTitle;
+            EXAM_INSTRUCTIONS = newInstructions;
+            if(newTime > 0) EXAM_TIME_MINUTES = newTime;
+
+            updateClientUI(); // Updates the UI instantly for the session
+
+            const msg = document.getElementById('settingsUpdateMsg');
+            msg.classList.remove('hidden');
+            setTimeout(() => msg.classList.add('hidden'), 2500);
+        });
+
+        // --- ADMIN TABS LOGIC ---
         const tabQuestionsBtn = document.getElementById('tabQuestionsBtn');
         const tabResultsBtn = document.getElementById('tabResultsBtn');
         const adminQuestionsTab = document.getElementById('adminQuestionsTab');
@@ -628,162 +712,167 @@
             fetchResultsData();
         });
 
+        // --- ADMIN STUDENT RESULTS DATA LOGIC ---
         document.getElementById('refreshResultsBtn').addEventListener('click', fetchResultsData);
+        
+        document.getElementById('mockResultsBtn').addEventListener('click', () => {
+            // Load some fake data to demonstrate the highest-to-lowest sorting easily
+            const mockData = [
+                { "Full Name": "Jane Doe", "Course": "BSN", "Year Level": "3", "Section": "A1", "Score": "5/6", "Rating": "Excellent Clinical Judgement (Pass)", "Timestamp": new Date().toISOString() },
+                { "Full Name": "John Smith", "Course": "BSN", "Year Level": "4", "Section": "B2", "Score": "3/6", "Rating": "Below Target (Fail)", "Timestamp": new Date().toISOString() },
+                { "Full Name": "Mary Grace", "Course": "BSN", "Year Level": "3", "Section": "A1", "Score": "6/6", "Rating": "Excellent Clinical Judgement (Pass)", "Timestamp": new Date().toISOString() },
+                { "Full Name": "Peter Cruz", "Course": "BSN", "Year Level": "2", "Section": "C3", "Score": "4/6", "Rating": "Average - Review Needed (Pass)", "Timestamp": new Date().toISOString() }
+            ];
+            processAndRenderResults(mockData);
+        });
 
         function fetchResultsData() {
             const loading = document.getElementById('resultsLoadingState');
             const dataState = document.getElementById('resultsDataState');
-            const tbody = document.getElementById('resultsTableBody');
+            const dashboard = document.getElementById('summaryDashboard');
             const noResults = document.getElementById('noResultsMsg');
 
             loading.classList.remove('hidden');
             dataState.classList.add('hidden');
+            dashboard.classList.add('hidden');
+            noResults.classList.add('hidden');
             
             if (GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
                 loading.classList.add('hidden');
-                dataState.classList.remove('hidden');
                 noResults.classList.remove('hidden');
-                noResults.innerHTML = "You must deploy and connect your Google Apps Script URL to see results.";
+                noResults.innerHTML = `<svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>You must connect your Google Apps Script URL to fetch real results.<br>Use "Load Demo Data" above to test the summary view instead.`;
                 return;
             }
 
             fetch(GOOGLE_SCRIPT_URL)
                 .then(res => res.json())
                 .then(data => {
-                    loading.classList.add('hidden');
-                    dataState.classList.remove('hidden');
-                    
                     if (data.result === 'success' && data.data && data.data.length > 0) {
-                        noResults.classList.add('hidden');
-                        
-                        // Parse score safely (e.g. "4/5" -> 4) to sort by it
-                        let results = data.data;
-                        results.sort((a, b) => {
-                            const scoreA = parseInt(a.Score ? a.Score.split('/')[0] : 0) || 0;
-                            const scoreB = parseInt(b.Score ? b.Score.split('/')[0] : 0) || 0;
-                            return scoreB - scoreA; // Descending order (highest to lowest)
-                        });
-
-                        tbody.innerHTML = '';
-                        results.forEach(row => {
-                            // Format date nicely
-                            let dateStr = "Unknown";
-                            if(row.Timestamp) {
-                                const d = new Date(row.Timestamp);
-                                dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                            }
-
-                            const isPass = row.Rating && row.Rating.includes('Pass');
-                            const ratingColor = isPass ? 'text-green-600 bg-green-50 border-green-100' : 'text-red-600 bg-red-50 border-red-100';
-
-                            tbody.innerHTML += `
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="p-3 font-medium text-slate-800">${row["Full Name"] || 'N/A'}</td>
-                                    <td class="p-3 text-slate-600 text-sm">${row.Course || ''} Yr ${row["Year Level"] || ''} - ${row.Section || ''}</td>
-                                    <td class="p-3 font-bold text-slate-800">${row.Score || '0'}</td>
-                                    <td class="p-3 text-sm"><span class="px-2 py-1 rounded border ${ratingColor}">${row.Rating || 'N/A'}</span></td>
-                                    <td class="p-3 text-slate-500 text-xs">${dateStr}</td>
-                                </tr>
-                            `;
-                        });
+                        processAndRenderResults(data.data);
                     } else {
-                        tbody.innerHTML = '';
+                        loading.classList.add('hidden');
                         noResults.classList.remove('hidden');
                     }
                 })
                 .catch(err => {
                     loading.classList.add('hidden');
-                    dataState.classList.remove('hidden');
-                    tbody.innerHTML = '';
                     noResults.classList.remove('hidden');
                     noResults.innerHTML = "Error loading results. Check console.";
                     console.error(err);
                 });
         }
 
-        // Cancel Login
-        document.getElementById('cancelAdminBtn').addEventListener('click', () => {
-            screens.adminLogin.classList.add('hidden');
-            screens.registration.classList.remove('hidden');
-        });
+        function processAndRenderResults(resultsArray) {
+            const loading = document.getElementById('resultsLoadingState');
+            const dataState = document.getElementById('resultsDataState');
+            const dashboard = document.getElementById('summaryDashboard');
+            const tbody = document.getElementById('resultsTableBody');
+            
+            loading.classList.add('hidden');
+            
+            // 1. Sort Results from Highest to Lowest Score
+            resultsArray.sort((a, b) => {
+                const getScoreValue = (scoreStr) => {
+                    if(!scoreStr) return 0;
+                    return parseInt(scoreStr.toString().split('/')[0]) || 0;
+                };
+                return getScoreValue(b.Score) - getScoreValue(a.Score);
+            });
 
-        // Submit Login
-        document.getElementById('loginAdminBtn').addEventListener('click', () => {
-            const pass = document.getElementById('adminPassword').value;
-            if (pass === ADMIN_PASS) {
-                screens.adminLogin.classList.add('hidden');
-                screens.adminDashboard.classList.remove('hidden');
-                
-                // Populate current settings in admin panel
-                document.getElementById('adminTimerInput').value = EXAM_TIME_MINUTES;
-                
-                renderAdminQuestions();
-            } else {
-                document.getElementById('adminError').classList.remove('hidden');
-            }
-        });
+            // 2. Calculate Dashboard Statistics
+            let totalStudents = resultsArray.length;
+            let totalPercentage = 0;
+            let highestPercent = 0;
+            let lowestPercent = 100;
 
-        // Exit Admin Dashboard
-        document.getElementById('exitAdminBtn').addEventListener('click', () => {
-            screens.adminDashboard.classList.add('hidden');
-            screens.registration.classList.remove('hidden');
-            renderQuestions(); // Re-render for students in case admin changed them
-        });
-        
-        // Admin Timer Configuration Save Event
-        document.getElementById('saveTimerBtn').addEventListener('click', () => {
-            const newVal = parseInt(document.getElementById('adminTimerInput').value);
-            if (newVal > 0) {
-                EXAM_TIME_MINUTES = newVal;
-                updateRegistrationSubtitle(); // Update the student intro text
-                
-                // Show success message animation
-                const msg = document.getElementById('timerUpdateMsg');
-                msg.classList.remove('hidden');
-                setTimeout(() => msg.classList.add('hidden'), 2000);
-            }
-        });
+            tbody.innerHTML = '';
+            resultsArray.forEach((row, index) => {
+                // Parse score details
+                const scoreParts = (row.Score || '0/1').split('/');
+                const correct = parseInt(scoreParts[0]) || 0;
+                const total = parseInt(scoreParts[1]) || 1;
+                const percentage = Math.round((correct / total) * 100);
 
-        // Render the list of questions in the admin panel
+                totalPercentage += percentage;
+                if(percentage > highestPercent) highestPercent = percentage;
+                if(percentage < lowestPercent) lowestPercent = percentage;
+
+                // Format Date
+                let dateStr = "Unknown Date";
+                if(row.Timestamp) {
+                    const d = new Date(row.Timestamp);
+                    dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                }
+
+                // Styling Status
+                const isPass = row.Rating && row.Rating.includes('Pass');
+                const badgeColor = isPass ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-4 font-bold text-slate-500 text-center text-sm">#${index + 1}</td>
+                        <td class="p-4">
+                            <div class="font-bold text-slate-800">${row["Full Name"] || 'N/A'}</div>
+                            <div class="text-xs text-slate-400 mt-1">${dateStr}</div>
+                        </td>
+                        <td class="p-4 text-slate-600 text-sm font-medium">BSN ${row["Year Level"] || ''} - ${row.Section || ''}</td>
+                        <td class="p-4 font-black text-slate-800 text-lg">${row.Score || '0'}</td>
+                        <td class="p-4 font-bold ${percentage >= 75 ? 'text-blue-600' : 'text-slate-600'}">${percentage}%</td>
+                        <td class="p-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold ${badgeColor}">
+                                ${isPass ? 'Passed' : 'Failed'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Update Dashboard Metrics
+            document.getElementById('statTotalStudents').innerText = totalStudents;
+            document.getElementById('statAvgScore').innerText = Math.round(totalPercentage / totalStudents) + '%';
+            document.getElementById('statHighestScore').innerText = highestPercent + '%';
+            document.getElementById('statLowestScore').innerText = totalStudents > 0 ? lowestPercent + '%' : '0%';
+
+            dashboard.classList.remove('hidden');
+            dataState.classList.remove('hidden');
+        }
+
+        // --- ADMIN QUESTION MANAGEMENT LOGIC ---
         function renderAdminQuestions() {
             const list = document.getElementById('adminQuestionsList');
             list.innerHTML = '';
             
             questionsData.forEach((q, idx) => {
                 const item = document.createElement('div');
-                item.className = 'border border-slate-200 rounded-lg p-5 bg-slate-50 flex flex-col sm:flex-row justify-between items-start gap-4 transition-all hover:shadow-md';
+                item.className = 'border border-slate-200 rounded-xl p-5 bg-white shadow-sm flex flex-col sm:flex-row justify-between items-start gap-6 transition-all hover:shadow-md';
                 item.innerHTML = `
-                    <div class="flex-1">
-                        <p class="font-semibold text-slate-800 mb-3 text-lg"><span class="text-blue-600 mr-2">Q${idx + 1}.</span>${q.text}</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-600">
+                    <div class="flex-1 w-full">
+                        <p class="font-bold text-slate-800 mb-4 text-lg"><span class="text-blue-600 mr-2">Q${idx + 1}.</span>${q.text}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600">
                             ${q.options.map((opt, oIdx) => `
-                                <div class="p-2 rounded border ${oIdx === q.correctAnswer ? 'bg-green-50 border-green-200 text-green-800 font-medium' : 'border-slate-200 bg-white'}">
-                                    <span class="font-bold mr-1">${oIdx + 1}.</span> ${opt} 
-                                    ${oIdx === q.correctAnswer ? ' (Correct Answer)' : ''}
+                                <div class="p-3 rounded-lg border ${oIdx === q.correctAnswer ? 'bg-green-50 border-green-300 text-green-800 shadow-sm' : 'border-slate-100 bg-slate-50'}">
+                                    <span class="font-bold mr-1 opacity-70">${oIdx + 1}.</span> ${opt} 
+                                    ${oIdx === q.correctAnswer ? '<svg class="w-4 h-4 inline ml-1 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : ''}
                                 </div>
                             `).join('')}
                         </div>
                     </div>
-                    <div class="flex sm:flex-col gap-2 w-full sm:w-auto mt-4 sm:mt-0">
-                        <button onclick="openAdminModal(${idx})" class="flex-1 px-4 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg font-medium transition-colors">Edit</button>
-                        <button onclick="deleteQuestion(${idx})" class="flex-1 px-4 py-2 bg-red-50 border border-red-200 hover:bg-red-100 text-red-600 rounded-lg font-medium transition-colors">Delete</button>
+                    <div class="flex sm:flex-col gap-2 w-full sm:w-32 shrink-0">
+                        <button onclick="openAdminModal(${idx})" class="flex-1 px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg font-medium transition-colors shadow-sm text-sm">Edit</button>
+                        <button onclick="deleteQuestion(${idx})" class="flex-1 px-4 py-2 bg-red-50 border border-red-200 hover:bg-red-100 text-red-600 rounded-lg font-medium transition-colors shadow-sm text-sm">Delete</button>
                     </div>
                 `;
                 list.appendChild(item);
             });
         }
 
-        // Open Modal to Add/Edit Question
-        document.getElementById('addQuestionBtn').addEventListener('click', () => {
-            openAdminModal(-1);
-        });
+        document.getElementById('addQuestionBtn').addEventListener('click', () => openAdminModal(-1));
 
         function openAdminModal(index) {
             editingQuestionIndex = index;
             const modal = document.getElementById('adminModal');
             
             if (index === -1) {
-                // Prepare for new question
                 document.getElementById('modalTitle').innerText = 'Add New Question';
                 document.getElementById('editQText').value = '';
                 document.getElementById('editOpt0').value = '';
@@ -792,7 +881,6 @@
                 document.getElementById('editOpt3').value = '';
                 document.getElementById('editCorrect').value = '0';
             } else {
-                // Populate existing question data
                 document.getElementById('modalTitle').innerText = 'Edit Question';
                 const q = questionsData[index];
                 document.getElementById('editQText').value = q.text;
@@ -806,12 +894,10 @@
             modal.classList.remove('hidden');
         }
 
-        // Close Modal
         document.getElementById('closeModalBtn').addEventListener('click', () => {
             document.getElementById('adminModal').classList.add('hidden');
         });
 
-        // Save Question (Validation attached to button to prevent standard alerts)
         document.getElementById('saveQuestionBtn').addEventListener('click', function(e) {
             const btn = e.target;
             const newQ = {
@@ -826,21 +912,19 @@
                 correctAnswer: parseInt(document.getElementById('editCorrect').value)
             };
 
-            // Ensure no fields are blank
             if (!newQ.text || newQ.options.some(opt => !opt)) {
                 const orig = btn.innerText;
                 btn.innerText = "Please fill all fields!";
-                btn.classList.add('bg-red-600', 'hover:bg-red-700');
-                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                btn.classList.add('bg-red-600');
+                btn.classList.remove('bg-blue-600');
                 setTimeout(() => {
                     btn.innerText = orig;
-                    btn.classList.remove('bg-red-600', 'hover:bg-red-700');
-                    btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    btn.classList.remove('bg-red-600');
+                    btn.classList.add('bg-blue-600');
                 }, 2000);
                 return;
             }
 
-            // Save or Update data
             if (editingQuestionIndex === -1) {
                 questionsData.push(newQ);
             } else {
@@ -851,7 +935,6 @@
             renderAdminQuestions();
         });
 
-        // Delete Question
         function deleteQuestion(index) {
             questionsData.splice(index, 1);
             renderAdminQuestions();
