@@ -25,9 +25,16 @@
             20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
         .shake { animation: shake 0.5s; }
+        
+        /* Anti-highlighting class */
+        .no-select {
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10/11 */
+            user-select: none; /* Standard */
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col no-select">
 
     <nav class="bg-blue-600 text-white shadow-md p-4 sticky top-0 z-50">
         <div class="max-w-5xl mx-auto flex justify-between items-center">
@@ -335,6 +342,18 @@
             </div>
         </div>
 
+        <!-- Anti-Cheating Warning Modal -->
+        <div id="cheatingModal" class="hidden fixed inset-0 bg-slate-900/80 flex items-center justify-center p-4 z-[70] backdrop-blur-sm">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center border-t-4 border-red-600 shake">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Warning!</h2>
+                <p id="cheatingWarningText" class="text-slate-600 mb-6">Suspicious behavior detected.</p>
+                <button id="dismissWarningBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-colors w-full">I Understand, Return to Exam</button>
+            </div>
+        </div>
+
     </main>
 
     <script>
@@ -430,6 +449,13 @@
         };
         const timerDisplay = document.getElementById('timerDisplay');
         let editingQuestionIndex = -1;
+
+        // --- ANTI-CHEATING VARIABLES ---
+        let cheatWarningCount = 0;
+        const MAX_CHEAT_WARNINGS = 2; // Allow 2 warnings, auto-submit on 3rd
+        const cheatingModal = document.getElementById('cheatingModal');
+        const dismissWarningBtn = document.getElementById('dismissWarningBtn');
+        const cheatingWarningText = document.getElementById('cheatingWarningText');
 
         // --- INITIALIZATION ---
         // Initialize dynamic text on load
@@ -939,6 +965,64 @@
             questionsData.splice(index, 1);
             renderAdminQuestions();
         }
+
+        // --- ANTI-CHEATING LOGIC ---
+        
+        // 1. Prevent Right Click / Context Menu
+        document.addEventListener('contextmenu', event => {
+            // Block right clicks unless the admin dashboard is visible
+            if (!screens.adminDashboard || screens.adminDashboard.classList.contains('hidden')) {
+                event.preventDefault();
+            }
+        });
+
+        // 2. Prevent Copy/Cut/Paste Shortcuts
+        ['copy', 'cut', 'paste'].forEach(evt => {
+            document.addEventListener(evt, e => {
+                if (!screens.exam.classList.contains('hidden')) {
+                    e.preventDefault();
+                    showCheatWarning(`Action Disabled: You are not allowed to copy or paste text during the exam.`);
+                }
+            });
+        });
+
+        // 3. Detect Tab Switching (Page Visibility API)
+        document.addEventListener('visibilitychange', () => {
+            // Only trigger if they leave the tab WHILE taking the exam
+            if (!screens.exam.classList.contains('hidden') && document.visibilityState === 'hidden') {
+                cheatWarningCount++;
+                
+                if (cheatWarningCount > MAX_CHEAT_WARNINGS) {
+                    // Strike 3: Auto Submit
+                    cheatingWarningText.innerText = "You have left the exam tab multiple times. Your exam is being automatically submitted.";
+                    dismissWarningBtn.classList.add('hidden'); // Remove dismiss button
+                    cheatingModal.classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        cheatingModal.classList.add('hidden');
+                        autoSubmitExam();
+                    }, 3000);
+                } else {
+                    // Warning 1 & 2
+                    showCheatWarning(`Warning ${cheatWarningCount}/${MAX_CHEAT_WARNINGS}: You navigated away from the exam tab. Further warnings will result in automatic submission.`);
+                }
+            }
+        });
+
+        function showCheatWarning(message) {
+            // Only show modal if they are actively taking the exam
+            if (!screens.exam.classList.contains('hidden')) {
+                cheatingWarningText.innerText = message;
+                dismissWarningBtn.classList.remove('hidden');
+                cheatingModal.classList.remove('hidden');
+            }
+        }
+
+        // Dismiss Warning Button
+        dismissWarningBtn.addEventListener('click', () => {
+            cheatingModal.classList.add('hidden');
+        });
+
     </script>
 </body>
 </html>
