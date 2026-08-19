@@ -36,7 +36,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col no-select">
 
-    <nav class="bg-blue-600 text-white shadow-md p-4 sticky top-0 z-50">
+    <nav class="bg-rose-800 text-white shadow-md p-4 sticky top-0 z-50">
         <div class="max-w-5xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
@@ -45,18 +45,17 @@
             
             <div class="flex items-center gap-4">
                 <!-- Timer Display (Hidden initially) -->
-                <div id="timerDisplay" class="hidden bg-blue-800 px-4 py-2 rounded-full font-mono text-lg font-bold shadow-inner transition-colors duration-300">
-                    15:00
+                <div id="timerDisplay" class="hidden bg-rose-950 px-4 py-2 rounded-full font-mono text-lg font-bold shadow-inner transition-colors duration-300">
+                    01:00
                 </div>
                 <!-- Admin Button -->
-                <button id="navAdminBtn" class="text-sm bg-blue-700 hover:bg-blue-800 px-3 py-1.5 rounded-lg transition-colors shadow-sm font-medium">Admin</button>
+                <button id="navAdminBtn" class="text-sm bg-rose-900 hover:bg-rose-950 px-3 py-1.5 rounded-lg transition-colors shadow-sm font-medium">Admin</button>
             </div>
         </div>
     </nav>
 
-    <!-- Global Loading Overlay -->
     <div id="globalLoadingScreen" class="fixed inset-0 bg-slate-50 z-[100] flex flex-col items-center justify-center transition-opacity duration-500">
-        <svg class="animate-spin h-12 w-12 text-blue-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <svg class="animate-spin h-12 w-12 text-rose-800 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
@@ -66,25 +65,24 @@
 
     <main class="flex-grow flex items-center justify-center p-4">
         
-        <!-- Screen 1: Registration Form -->
         <div id="registrationScreen" class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full fade-in border border-slate-100">
             <h2 id="registrationTitle" class="text-2xl font-bold text-slate-800 mb-2">Student Registration</h2>
-            <div id="registrationInstructions" class="text-slate-600 mb-2 text-sm bg-blue-50 p-3 rounded-lg border border-blue-100 hidden"></div>
-            <p id="registrationSubtitle" class="text-slate-500 mb-6 text-sm font-medium">You will have 15 minutes to complete the test.</p>
+            <div id="registrationInstructions" class="text-slate-600 mb-2 text-sm bg-rose-50 p-3 rounded-lg border border-rose-100 hidden"></div>
+            <p id="registrationSubtitle" class="text-slate-500 mb-6 text-sm font-medium">You will have 60 seconds per question.</p>
             
             <form id="registrationForm" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                    <input type="text" id="studentName" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Jane Doe">
+                    <input type="text" id="studentName" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 focus:border-rose-700 outline-none transition-all" placeholder="Jane Doe">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Course</label>
-                    <input type="text" id="course" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="BSN">
+                    <input type="text" id="course" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 focus:border-rose-700 outline-none transition-all" placeholder="BSN">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Year Level</label>
-                        <select id="year" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                        <select id="year" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white">
                             <option value="">Select</option>
                             <option value="1">1st Year</option>
                             <option value="2">2nd Year</option>
@@ -94,7 +92,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Section</label>
-                        <input type="text" id="section" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="A1">
+                        <input type="text" id="section" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none" placeholder="A1">
                     </div>
                 </div>
                 
@@ -103,34 +101,32 @@
                     Please fill out all fields before starting.
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-colors mt-4">
+                <button type="submit" class="w-full bg-rose-800 hover:bg-rose-900 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-colors mt-4">
                     Begin Examination
                 </button>
             </form>
         </div>
 
-        <!-- Screen 2: Quiz Application -->
         <div id="examScreen" class="hidden w-full max-w-3xl fade-in my-8">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mb-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-slate-100 pb-4 gap-4">
                     <h2 id="examTitleDisplay" class="text-xl font-bold text-slate-800">NCLEX Assessment</h2>
-                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap" id="questionTracker">Question 1 of 5</span>
+                    <span class="bg-rose-50 text-rose-900 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap" id="questionTracker">Question 1 of 5</span>
                 </div>
                 
                 <div id="questionsContainer" class="space-y-8">
-                    <!-- Questions will be injected here by JavaScript -->
+                    <!-- Current Question will be injected here by JavaScript -->
                 </div>
 
                 <div class="mt-10 pt-6 border-t border-slate-100 flex justify-end">
-                    <button id="submitExamBtn" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition-all transform hover:scale-105 flex items-center gap-2">
-                        <span>Submit Answers</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <button id="nextBtn" class="bg-rose-800 hover:bg-rose-900 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition-all transform hover:scale-105 flex items-center gap-2">
+                        <span id="nextBtnText">Next Question</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Screen 3: Results & Data Submission -->
         <div id="resultScreen" class="hidden bg-white rounded-2xl shadow-xl p-8 max-w-md w-full fade-in border border-slate-100 text-center">
             <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -139,14 +135,14 @@
             <p class="text-slate-500 mb-6">Your results have been calculated.</p>
             
             <div class="bg-slate-50 rounded-xl p-6 mb-6">
-                <div class="text-5xl font-black text-blue-600 mb-2" id="finalScoreDisplay">0/0</div>
+                <div class="text-5xl font-black text-rose-800 mb-2" id="finalScoreDisplay">0/0</div>
                 <div class="text-lg font-semibold text-slate-700 mb-1" id="ratingDisplay">Rating</div>
-                <div class="text-sm text-slate-500" id="timeRemainingDisplay">Time Remaining: 00:00</div>
+                <div class="text-sm text-slate-500" id="timeRemainingDisplay">Completed</div>
             </div>
 
             <!-- Sync Status UI -->
             <div id="syncStatus" class="flex items-center justify-center gap-2 text-sm text-slate-600 mb-6">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-rose-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -158,29 +154,27 @@
             </button>
         </div>
 
-        <!-- Screen 4: Admin Login -->
         <div id="adminLoginScreen" class="hidden bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full fade-in border border-slate-100">
             <h2 class="text-2xl font-bold text-slate-800 mb-4">Admin Access</h2>
             <p class="text-slate-500 mb-6 text-sm">Enter the administrator password to manage exam questions and view results.</p>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                <input type="password" id="adminPassword" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter password">
+                <input type="password" id="adminPassword" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none" placeholder="Enter password">
             </div>
             <div id="adminError" class="hidden text-red-600 text-sm mb-4 bg-red-50 p-2 rounded border border-red-100">Incorrect password.</div>
             <div class="flex gap-2">
                 <button id="cancelAdminBtn" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 font-medium py-2 rounded-lg transition-colors">Cancel</button>
-                <button id="loginAdminBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors">Login</button>
+                <button id="loginAdminBtn" class="flex-1 bg-rose-800 hover:bg-rose-900 text-white font-medium py-2 rounded-lg transition-colors">Login</button>
             </div>
         </div>
 
-        <!-- Screen 5: Admin Dashboard -->
         <div id="adminDashboardScreen" class="hidden w-full max-w-5xl fade-in my-8">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <!-- Admin Header & Tabs -->
                 <div class="bg-slate-50 border-b border-slate-200 px-6 sm:px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <h2 class="text-xl font-bold text-slate-800">Admin Dashboard</h2>
                     <div class="flex gap-2 flex-wrap">
-                        <button id="tabQuestionsBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Settings & Questions</button>
+                        <button id="tabQuestionsBtn" class="bg-rose-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Settings & Questions</button>
                         <button id="tabResultsBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Student Results Summary</button>
                         <button id="exitAdminBtn" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors ml-auto sm:ml-4">Exit Admin</button>
                     </div>
@@ -209,15 +203,15 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Exam Title</label>
-                                <input type="text" id="adminTitleInput" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white" placeholder="e.g., Midterm Examination">
+                                <input type="text" id="adminTitleInput" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white" placeholder="e.g., Midterm Examination">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Student Instructions (Optional)</label>
-                                <textarea id="adminInstructionsInput" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white" placeholder="e.g., Read each question carefully. No calculators allowed."></textarea>
+                                <textarea id="adminInstructionsInput" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white" placeholder="e.g., Read each question carefully. No calculators allowed."></textarea>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Exam Duration (Minutes)</label>
-                                <input type="number" id="adminTimerInput" min="1" max="180" class="w-32 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Seconds Per Question</label>
+                                <input type="number" id="adminTimerInput" min="10" max="600" class="w-32 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white">
                             </div>
                             
                             <div id="settingsUpdateMsg" class="text-green-600 text-sm font-medium hidden flex items-center gap-1 mt-2">
@@ -229,7 +223,7 @@
 
                     <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
                         <h3 class="text-lg font-bold text-slate-800">Question Bank</h3>
-                        <button id="addQuestionBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">+ Add Question</button>
+                        <button id="addQuestionBtn" class="bg-rose-800 hover:bg-rose-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">+ Add Question</button>
                     </div>
 
                     <div id="adminQuestionsList" class="space-y-4">
@@ -237,7 +231,6 @@
                     </div>
                 </div>
 
-                <!-- Tab Content: Results Summary -->
                 <div id="adminResultsTab" class="p-6 sm:p-8 hidden bg-slate-50/50">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-slate-200 pb-4 gap-4">
                         <h3 class="text-lg font-bold text-slate-800">Student Results Summary</h3>
@@ -256,7 +249,7 @@
                     <div id="resultsFilterBar" class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6 flex flex-col sm:flex-row gap-4 items-end hidden fade-in">
                         <div class="flex-1 w-full">
                             <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Filter by Year</label>
-                            <select id="filterYear" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white text-sm">
+                            <select id="filterYear" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white text-sm">
                                 <option value="all">All Years</option>
                                 <option value="1">1st Year</option>
                                 <option value="2">2nd Year</option>
@@ -266,7 +259,7 @@
                         </div>
                         <div class="flex-1 w-full">
                             <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Filter by Section</label>
-                            <input type="text" id="filterSection" placeholder="e.g. A1" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white text-sm">
+                            <input type="text" id="filterSection" placeholder="e.g. A1" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white text-sm">
                         </div>
                         <button id="clearFiltersBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-slate-200 whitespace-nowrap">
                             Clear Filters
@@ -281,7 +274,7 @@
                         </div>
                         <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                             <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Average Score</p>
-                            <p id="statAvgScore" class="text-2xl font-bold text-blue-600">0%</p>
+                            <p id="statAvgScore" class="text-2xl font-bold text-rose-800">0%</p>
                         </div>
                         <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                             <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Highest Score</p>
@@ -294,7 +287,7 @@
                     </div>
 
                     <div id="resultsLoadingState" class="text-center py-10 text-slate-500 flex flex-col items-center justify-center hidden">
-                        <svg class="animate-spin mb-3 h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg class="animate-spin mb-3 h-8 w-8 text-rose-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -336,29 +329,29 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Question Text</label>
-                        <textarea id="editQText" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter the scenario or question..."></textarea>
+                        <textarea id="editQText" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none" placeholder="Enter the scenario or question..."></textarea>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Option 1</label>
-                            <input type="text" id="editOpt0" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <input type="text" id="editOpt0" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Option 2</label>
-                            <input type="text" id="editOpt1" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <input type="text" id="editOpt1" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Option 3</label>
-                            <input type="text" id="editOpt2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <input type="text" id="editOpt2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Option 4</label>
-                            <input type="text" id="editOpt3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <input type="text" id="editOpt3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none">
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Correct Answer</label>
-                        <select id="editCorrect" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white font-medium text-green-700">
+                        <select id="editCorrect" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white font-medium text-green-700">
                             <option value="0">Option 1 is correct</option>
                             <option value="1">Option 2 is correct</option>
                             <option value="2">Option 3 is correct</option>
@@ -367,7 +360,7 @@
                     </div>
                     <div class="flex justify-end gap-3 mt-8 pt-4 border-t border-slate-100">
                         <button id="closeModalBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-medium px-6 py-2 rounded-lg transition-colors">Cancel</button>
-                        <button id="saveQuestionBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-colors">Save Question</button>
+                        <button id="saveQuestionBtn" class="bg-rose-800 hover:bg-rose-900 text-white font-medium px-6 py-2 rounded-lg transition-colors">Save Question</button>
                     </div>
                 </div>
             </div>
@@ -394,10 +387,10 @@
         // --- STATE VARIABLES ---
         let EXAM_TITLE = "Nursing Fundamentals Assessment";
         let EXAM_INSTRUCTIONS = "Please read each question carefully and select the best answer. No calculators or outside resources are permitted.";
-        let EXAM_TIME_MINUTES = 15;
+        let SECONDS_PER_QUESTION = 60; 
         const ADMIN_PASS = "09163129437";
         
-        let allFetchedResults = []; // NEW: Stores all results to allow local filtering
+        let allFetchedResults = [];
         
         let questionsData = [
             {
@@ -469,10 +462,13 @@
         ];
 
         let studentData = {};
-        let timeRemaining = EXAM_TIME_MINUTES * 60;
+        let timeRemaining = SECONDS_PER_QUESTION;
         let timerInterval;
+        
+        // --- PAGINATION STATE ---
+        let currentQuestionIndex = 0;
+        let studentAnswers = {};
 
-        // --- NEW: CLOUD SYNC STATE ---
         let isCloudSynced = false;
 
         // --- DOM ELEMENTS ---
@@ -494,7 +490,6 @@
         const cheatingWarningText = document.getElementById('cheatingWarningText');
 
         // --- INITIALIZATION ---
-        // Initialize dynamic text on load
         function updateClientUI() {
             // Update Title
             document.getElementById('registrationTitle').innerText = EXAM_TITLE;
@@ -509,10 +504,9 @@
                 instEl.classList.add('hidden');
             }
             
-            document.getElementById('registrationSubtitle').innerText = `You will have ${EXAM_TIME_MINUTES} minutes to complete the test.`;
+            document.getElementById('registrationSubtitle').innerText = `You will have ${SECONDS_PER_QUESTION} seconds per question.`;
         }
 
-        // --- NEW: FETCH FROM GOOGLE SHEETS ON LOAD ---
         function initApp() {
             if (GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
                 document.getElementById('globalLoadingScreen').classList.add('hidden');
@@ -526,7 +520,7 @@
                     if (data.result === 'success' && data.config) {
                         if (data.config.Title) EXAM_TITLE = data.config.Title;
                         if (data.config.Instructions !== undefined) EXAM_INSTRUCTIONS = data.config.Instructions;
-                        if (data.config.Time) EXAM_TIME_MINUTES = parseInt(data.config.Time) || 15;
+                        if (data.config.Time) SECONDS_PER_QUESTION = parseInt(data.config.Time) || 60;
                         if (data.config.Questions) {
                             try {
                                 const parsed = JSON.parse(data.config.Questions);
@@ -559,28 +553,32 @@
                 section: document.getElementById('section').value
             };
 
-            timeRemaining = EXAM_TIME_MINUTES * 60;
+            currentQuestionIndex = 0;
+            studentAnswers = {};
             
             screens.registration.classList.add('hidden');
             screens.exam.classList.remove('hidden');
             timerDisplay.classList.remove('hidden');
             
             timerDisplay.classList.remove('bg-red-600', 'animate-pulse');
-            timerDisplay.classList.add('bg-blue-800');
+            timerDisplay.classList.add('bg-rose-950');
 
-            renderQuestions();
-            startTimer();
+            renderCurrentQuestion();
+            startQuestionTimer();
         });
 
-        function startTimer() {
+        function startQuestionTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = SECONDS_PER_QUESTION;
             updateTimerDisplay();
+            
             timerInterval = setInterval(() => {
                 timeRemaining--;
                 updateTimerDisplay();
                 
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
-                    autoSubmitExam();
+                    handleNextQuestion(true); // true = auto-advance due to timeout
                 }
             }, 1000);
         }
@@ -591,61 +589,86 @@
             const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             timerDisplay.innerText = formattedTime;
 
-            if (timeRemaining < 180 && !timerDisplay.classList.contains('bg-red-600')) {
-                timerDisplay.classList.remove('bg-blue-800');
+            if (timeRemaining <= 10 && !timerDisplay.classList.contains('bg-red-600')) {
+                timerDisplay.classList.remove('bg-rose-950');
                 timerDisplay.classList.add('bg-red-600', 'animate-pulse');
+            } else if (timeRemaining > 10 && timerDisplay.classList.contains('bg-red-600')) {
+                timerDisplay.classList.remove('bg-red-600', 'animate-pulse');
+                timerDisplay.classList.add('bg-rose-950');
             }
         }
 
-        function renderQuestions() {
+        function renderCurrentQuestion() {
             const container = document.getElementById('questionsContainer');
-            container.innerHTML = ''; 
+            const q = questionsData[currentQuestionIndex];
+            const savedAnswer = studentAnswers[currentQuestionIndex];
 
-            questionsData.forEach((q, index) => {
-                const questionHTML = `
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 mb-6">
-                        <h3 class="text-lg font-medium text-slate-800 mb-4 leading-relaxed">
-                            <span class="font-bold text-blue-600 mr-2">${index + 1}.</span> ${q.text}
-                        </h3>
-                        <div class="space-y-3 pl-2 sm:pl-6">
-                            ${q.options.map((opt, optIndex) => `
-                                <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-white hover:border-blue-300 hover:shadow-sm transition-all bg-white">
-                                    <input type="radio" name="question_${index}" value="${optIndex}" class="mt-1 text-blue-600 focus:ring-blue-500 w-4 h-4">
-                                    <span class="text-slate-700">${opt}</span>
-                                </label>
-                            `).join('')}
-                        </div>
+            const questionHTML = `
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 mb-6 fade-in">
+                    <h3 class="text-lg font-medium text-slate-800 mb-4 leading-relaxed">
+                        <span class="font-bold text-rose-800 mr-2">${currentQuestionIndex + 1}.</span> ${q.text}
+                    </h3>
+                    <div class="space-y-3 pl-2 sm:pl-6">
+                        ${q.options.map((opt, optIndex) => `
+                            <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-white hover:border-rose-300 hover:shadow-sm transition-all bg-white">
+                                <input type="radio" name="question_radio" value="${optIndex}" class="mt-1 text-rose-800 focus:ring-rose-700 w-4 h-4" ${savedAnswer === optIndex ? 'checked' : ''}>
+                                <span class="text-slate-700">${opt}</span>
+                            </label>
+                        `).join('')}
                     </div>
-                `;
-                container.insertAdjacentHTML('beforeend', questionHTML);
-            });
+                </div>
+            `;
+            container.innerHTML = questionHTML;
+            document.getElementById('questionTracker').innerText = `Question ${currentQuestionIndex + 1} of ${questionsData.length}`;
 
-            document.getElementById('questionTracker').innerText = `Total Questions: ${questionsData.length}`;
+            // Adjust button text
+            const nextBtnText = document.getElementById('nextBtnText');
+            if (currentQuestionIndex === questionsData.length - 1) {
+                nextBtnText.innerText = "Submit Exam";
+            } else {
+                nextBtnText.innerText = "Next Question";
+            }
         }
 
-        document.getElementById('submitExamBtn').addEventListener('click', () => {
-            const unanswered = questionsData.some((_, index) => {
-                return !document.querySelector(`input[name="question_${index}"]:checked`);
-            });
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            handleNextQuestion(false);
+        });
 
-            if (unanswered) {
-                const btn = document.getElementById('submitExamBtn');
+        function handleNextQuestion(isTimeout) {
+            // Check if user answered
+            const selected = document.querySelector('input[name="question_radio"]:checked');
+            
+            if (selected) {
+                // Save answer
+                studentAnswers[currentQuestionIndex] = parseInt(selected.value);
+            } else if (!isTimeout) {
+                // If clicked next but didn't select anything, and timer hasn't run out
+                const btn = document.getElementById('nextBtn');
                 const originalText = btn.innerHTML;
-                btn.innerHTML = `<span class="text-red-200">Please answer all questions</span>`;
+                btn.innerHTML = `<span class="text-red-200">Please select an answer</span>`;
                 btn.classList.add('bg-red-600', 'shake');
-                btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                btn.classList.remove('bg-rose-800', 'hover:bg-rose-900');
+                
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.classList.remove('bg-red-600', 'shake');
-                    btn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    btn.classList.add('bg-rose-800', 'hover:bg-rose-900');
                 }, 2000);
-                return;
+                return; // Stop execution, don't advance
             }
 
-            processExamSubmission();
-        });
+            // Move to next question or submit
+            if (currentQuestionIndex < questionsData.length - 1) {
+                currentQuestionIndex++;
+                renderCurrentQuestion();
+                startQuestionTimer();
+            } else {
+                processExamSubmission();
+            }
+        }
 
         function autoSubmitExam() {
+            // For strike 3 anti-cheat automatic submission
             timerDisplay.innerText = "TIME UP";
             processExamSubmission();
         }
@@ -655,8 +678,7 @@
             
             let score = 0;
             questionsData.forEach((q, index) => {
-                const selected = document.querySelector(`input[name="question_${index}"]:checked`);
-                if (selected && parseInt(selected.value) === q.correctAnswer) {
+                if (studentAnswers[index] === q.correctAnswer) {
                     score++;
                 }
             });
@@ -670,14 +692,14 @@
             else rating = "Below Target (Fail)";
 
             const formData = new FormData();
-            formData.append('action', 'submitExam'); // NEW ACTION IDENTIFIER
+            formData.append('action', 'submitExam'); 
             formData.append('name', studentData.name);
             formData.append('course', studentData.course);
             formData.append('year', studentData.year);
             formData.append('section', studentData.section);
             formData.append('score', `${score}/${maxScore}`);
             formData.append('rating', rating);
-            formData.append('timeRemaining', timerDisplay.innerText);
+            formData.append('timeRemaining', "Completed"); // No global clock remaining
 
             screens.exam.classList.add('hidden');
             timerDisplay.classList.add('hidden');
@@ -687,7 +709,6 @@
             document.getElementById('ratingDisplay').innerText = rating;
             
             document.getElementById('ratingDisplay').className = "text-lg font-semibold mb-1 " + (percentage >= 60 ? 'text-green-600' : 'text-red-600');
-            document.getElementById('timeRemainingDisplay').innerText = `Time Remaining on clock: ${timerDisplay.innerText}`;
 
             sendDataToGoogleSheets(formData);
         }
@@ -742,7 +763,7 @@
                 // Populate current settings in admin panel
                 document.getElementById('adminTitleInput').value = EXAM_TITLE;
                 document.getElementById('adminInstructionsInput').value = EXAM_INSTRUCTIONS;
-                document.getElementById('adminTimerInput').value = EXAM_TIME_MINUTES;
+                document.getElementById('adminTimerInput').value = SECONDS_PER_QUESTION;
                 
                 renderAdminQuestions();
             } else {
@@ -754,12 +775,10 @@
             screens.adminDashboard.classList.add('hidden');
             screens.registration.classList.remove('hidden');
             updateClientUI();
-            renderQuestions(); 
+            currentQuestionIndex = 0; // reset
         });
 
         // --- ADMIN EXAM SETTINGS LOGIC ---
-        
-        // NEW: Cloud Sync function for Admin Settings & Questions
         function syncExamSettingsToCloud(buttonElement, originalText) {
             if (GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") return;
             
@@ -772,7 +791,7 @@
             formData.append('action', 'saveSettings');
             formData.append('title', EXAM_TITLE);
             formData.append('instructions', EXAM_INSTRUCTIONS);
-            formData.append('time', EXAM_TIME_MINUTES);
+            formData.append('time', SECONDS_PER_QUESTION); // Saves the seconds per question setting
             formData.append('questions', JSON.stringify(questionsData));
 
             fetch(GOOGLE_SCRIPT_URL, {
@@ -805,7 +824,7 @@
 
             if(newTitle) EXAM_TITLE = newTitle;
             EXAM_INSTRUCTIONS = newInstructions;
-            if(newTime > 0) EXAM_TIME_MINUTES = newTime;
+            if(newTime > 0) SECONDS_PER_QUESTION = newTime;
 
             updateClientUI(); // Updates the UI instantly for the session
             syncExamSettingsToCloud(e.target, 'Save Settings');
@@ -818,11 +837,11 @@
         const adminResultsTab = document.getElementById('adminResultsTab');
 
         tabQuestionsBtn.addEventListener('click', () => {
-            tabQuestionsBtn.classList.replace('bg-slate-200', 'bg-blue-600');
+            tabQuestionsBtn.classList.replace('bg-slate-200', 'bg-rose-800');
             tabQuestionsBtn.classList.replace('text-slate-800', 'text-white');
             tabQuestionsBtn.classList.remove('hover:bg-slate-300');
             
-            tabResultsBtn.classList.replace('bg-blue-600', 'bg-slate-200');
+            tabResultsBtn.classList.replace('bg-rose-800', 'bg-slate-200');
             tabResultsBtn.classList.replace('text-white', 'text-slate-800');
             tabResultsBtn.classList.add('hover:bg-slate-300');
 
@@ -831,11 +850,11 @@
         });
 
         tabResultsBtn.addEventListener('click', () => {
-            tabResultsBtn.classList.replace('bg-slate-200', 'bg-blue-600');
+            tabResultsBtn.classList.replace('bg-slate-200', 'bg-rose-800');
             tabResultsBtn.classList.replace('text-slate-800', 'text-white');
             tabResultsBtn.classList.remove('hover:bg-slate-300');
             
-            tabQuestionsBtn.classList.replace('bg-blue-600', 'bg-slate-200');
+            tabQuestionsBtn.classList.replace('bg-rose-800', 'bg-slate-200');
             tabQuestionsBtn.classList.replace('text-white', 'text-slate-800');
             tabQuestionsBtn.classList.add('hover:bg-slate-300');
 
@@ -849,7 +868,6 @@
         document.getElementById('refreshResultsBtn').addEventListener('click', fetchResultsData);
         
         document.getElementById('mockResultsBtn').addEventListener('click', () => {
-            // Load some fake data to demonstrate the highest-to-lowest sorting easily
             const mockData = [
                 { "Full Name": "Jane Doe", "Course": "BSN", "Year Level": "3", "Section": "A1", "Score": "5/6", "Rating": "Excellent Clinical Judgement (Pass)", "Timestamp": new Date().toISOString() },
                 { "Full Name": "John Smith", "Course": "BSN", "Year Level": "4", "Section": "B2", "Score": "3/6", "Rating": "Below Target (Fail)", "Timestamp": new Date().toISOString() },
@@ -950,21 +968,12 @@
             resultsArray.sort((a, b) => {
                 const getScoreValue = (scoreStr) => {
                     if(!scoreStr) return 0;
-                    
-                    // Handle Google Sheets auto-formatting fractions like "5/6" into Dates
                     let sStr = String(scoreStr);
                     if (sStr.includes('T') && sStr.includes('Z')) {
-                       // Try to parse out what the date conversion ruined.
-                       // This happens when Google Sheets turns "5/6" into May 6th of the current year.
                        const dateObj = new Date(sStr);
-                       if(!isNaN(dateObj)) {
-                           // The month is 0-indexed in JS, so add 1 to get the likely 'numerator'
-                           const num = dateObj.getMonth() + 1;
-                           return num; 
-                       }
-                       return 0; // fallback
+                       if(!isNaN(dateObj)) return dateObj.getMonth() + 1; 
+                       return 0; 
                     }
-
                     return parseInt(sStr.split('/')[0]) || 0;
                 };
                 return getScoreValue(b.Score) - getScoreValue(a.Score);
@@ -978,21 +987,17 @@
 
             tbody.innerHTML = '';
             resultsArray.forEach((row, index) => {
-                // Parse score details, handling Google Sheets date conversions
                 let sStr = String(row.Score || '0/1');
                 let correct = 0;
-                let total = questionsData.length > 0 ? questionsData.length : 1; // Default to current total questions if unknown
+                let total = questionsData.length > 0 ? questionsData.length : 1; 
                 
                 if (sStr.includes('T') && sStr.includes('Z')) {
-                     // Recovering the fraction from the Date object Google Sheets made
                      const dateObj = new Date(sStr);
                      if(!isNaN(dateObj)) {
-                         // The month (0-indexed) + 1 is usually the score (e.g., May -> 5)
                          correct = dateObj.getMonth() + 1;
-                         // The date is usually the total questions (e.g., 6th -> 6)
                          total = dateObj.getDate();
                      }
-                     sStr = `${correct}/${total}`; // Reconstruct string for display
+                     sStr = `${correct}/${total}`; 
                 } else {
                      const scoreParts = sStr.split('/');
                      correct = parseInt(scoreParts[0]) || 0;
@@ -1005,14 +1010,12 @@
                 if(percentage > highestPercent) highestPercent = percentage;
                 if(percentage < lowestPercent) lowestPercent = percentage;
 
-                // Format Date
                 let dateStr = "Unknown Date";
                 if(row.Timestamp) {
                     const d = new Date(row.Timestamp);
                     dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 }
 
-                // Styling Status
                 const isPass = row.Rating && row.Rating.includes('Pass');
                 const badgeColor = isPass ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
 
@@ -1025,7 +1028,7 @@
                         </td>
                         <td class="p-4 text-slate-600 text-sm font-medium">BSN ${row["Year Level"] || ''} - ${row.Section || ''}</td>
                         <td class="p-4 font-black text-slate-800 text-lg">${sStr}</td>
-                        <td class="p-4 font-bold ${percentage >= 75 ? 'text-blue-600' : 'text-slate-600'}">${percentage}%</td>
+                        <td class="p-4 font-bold ${percentage >= 75 ? 'text-rose-800' : 'text-slate-600'}">${percentage}%</td>
                         <td class="p-4">
                             <span class="px-3 py-1 rounded-full text-xs font-bold ${badgeColor}">
                                 ${isPass ? 'Passed' : 'Failed'}
@@ -1035,7 +1038,6 @@
                 `;
             });
 
-            // Update Dashboard Metrics
             document.getElementById('statTotalStudents').innerText = totalStudents;
             document.getElementById('statAvgScore').innerText = Math.round(totalPercentage / totalStudents) + '%';
             document.getElementById('statHighestScore').innerText = highestPercent + '%';
@@ -1055,7 +1057,7 @@
                 item.className = 'border border-slate-200 rounded-xl p-5 bg-white shadow-sm flex flex-col sm:flex-row justify-between items-start gap-6 transition-all hover:shadow-md';
                 item.innerHTML = `
                     <div class="flex-1 w-full">
-                        <p class="font-bold text-slate-800 mb-4 text-lg"><span class="text-blue-600 mr-2">Q${idx + 1}.</span>${q.text}</p>
+                        <p class="font-bold text-slate-800 mb-4 text-lg"><span class="text-rose-800 mr-2">Q${idx + 1}.</span>${q.text}</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600">
                             ${q.options.map((opt, oIdx) => `
                                 <div class="p-3 rounded-lg border ${oIdx === q.correctAnswer ? 'bg-green-50 border-green-300 text-green-800 shadow-sm' : 'border-slate-100 bg-slate-50'}">
@@ -1124,11 +1126,11 @@
                 const orig = btn.innerText;
                 btn.innerText = "Please fill all fields!";
                 btn.classList.add('bg-red-600');
-                btn.classList.remove('bg-blue-600');
+                btn.classList.remove('bg-rose-800');
                 setTimeout(() => {
                     btn.innerText = orig;
                     btn.classList.remove('bg-red-600');
-                    btn.classList.add('bg-blue-600');
+                    btn.classList.add('bg-rose-800');
                 }, 2000);
                 return;
             }
@@ -1141,13 +1143,13 @@
             
             document.getElementById('adminModal').classList.add('hidden');
             renderAdminQuestions();
-            syncExamSettingsToCloud(document.getElementById('saveSettingsBtn'), 'Save Settings'); // Auto-sync after adding
+            syncExamSettingsToCloud(document.getElementById('saveSettingsBtn'), 'Save Settings'); 
         });
 
         function deleteQuestion(index) {
             questionsData.splice(index, 1);
             renderAdminQuestions();
-            syncExamSettingsToCloud(document.getElementById('saveSettingsBtn'), 'Save Settings'); // Auto-sync after deleting
+            syncExamSettingsToCloud(document.getElementById('saveSettingsBtn'), 'Save Settings'); 
         }
 
         // --- ANTI-CHEATING LOGIC ---
@@ -1179,7 +1181,7 @@
                 if (cheatWarningCount > MAX_CHEAT_WARNINGS) {
                     // Strike 3: Auto Submit
                     cheatingWarningText.innerText = "You have left the exam tab multiple times. Your exam is being automatically submitted.";
-                    dismissWarningBtn.classList.add('hidden'); // Remove dismiss button
+                    dismissWarningBtn.classList.add('hidden'); 
                     cheatingModal.classList.remove('hidden');
                     
                     setTimeout(() => {
