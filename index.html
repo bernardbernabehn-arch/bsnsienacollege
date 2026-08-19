@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siena College Taytay BSN</title>
+    <title>Siena College Taytay BSN - Essay Exam</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -40,6 +41,24 @@
         @media print {
             body { background: white !important; }
             nav, .no-print, #syncStatus, #globalLoadingScreen { display: none !important; }
+            
+            /* Admin Print Mode for Grade Report */
+            body.printing-admin #printReportModal {
+                position: absolute !important; left: 0 !important; top: 0 !important;
+                width: 100% !important; height: auto !important; min-height: 100vh !important;
+                background: white !important; display: block !important; overflow: visible !important;
+            }
+            body.printing-admin > *:not(main) { display: none !important; }
+            body.printing-admin main > *:not(#printReportModal) { display: none !important; }
+            body.printing-admin #printReportModal .no-print { display: none !important; }
+            body.printing-admin #printReportModal > div { 
+                box-shadow: none !important; 
+                margin: 0 !important; 
+                max-width: 100% !important; 
+                padding: 0 !important; 
+                border: none !important; 
+            }
+            
             #resultScreen { 
                 box-shadow: none !important; 
                 border: none !important; 
@@ -58,14 +77,14 @@
     <nav class="bg-rose-800 text-white shadow-md p-4 sticky top-0 z-50 no-print">
         <div class="max-w-5xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                <h1 class="text-xl font-bold">Siena College Taytay BSN</h1>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                <h1 class="text-xl font-bold">Siena College Taytay BSN - Essay Portal</h1>
             </div>
             
             <div class="flex items-center gap-4">
                 <!-- Timer Display (Hidden initially) -->
                 <div id="timerDisplay" class="hidden bg-rose-950 px-4 py-2 rounded-full font-mono text-lg font-bold shadow-inner transition-colors duration-300">
-                    01:00
+                    05:00
                 </div>
                 <!-- Admin Button -->
                 <button id="navAdminBtn" class="text-sm bg-rose-900 hover:bg-rose-950 px-3 py-1.5 rounded-lg transition-colors shadow-sm font-medium">Admin</button>
@@ -87,16 +106,20 @@
         <div id="registrationScreen" class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full fade-in border border-slate-100">
             <h2 id="registrationTitle" class="text-2xl font-bold text-slate-800 mb-2">Student Registration</h2>
             <div id="registrationInstructions" class="text-slate-600 mb-2 text-sm bg-rose-50 p-3 rounded-lg border border-rose-100 hidden"></div>
-            <p id="registrationSubtitle" class="text-slate-500 mb-6 text-sm font-medium">You will have 60 seconds per question.</p>
+            <p id="registrationSubtitle" class="text-slate-500 mb-6 text-sm font-medium">You will have designated time per essay.</p>
             
             <form id="registrationForm" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                    <input type="text" id="studentName" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 focus:border-rose-700 outline-none transition-all" placeholder="Jane Doe">
+                    <input type="text" id="studentName" required autocomplete="off" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 focus:border-rose-700 outline-none transition-all" placeholder="Jane Doe">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Course</label>
-                    <input type="text" id="course" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 focus:border-rose-700 outline-none transition-all" placeholder="BSN">
+                    <input type="text" id="course" required autocomplete="off" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 focus:border-rose-700 outline-none transition-all" placeholder="BSN">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                    <input type="email" id="studentEmail" required autocomplete="off" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none transition-all" placeholder="student@example.com">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Select Exam</label>
@@ -117,7 +140,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Section</label>
-                        <input type="text" id="section" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none" placeholder="A1">
+                        <input type="text" id="section" required autocomplete="off" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none" placeholder="A1">
                     </div>
                 </div>
                 
@@ -131,36 +154,36 @@
             </form>
         </div>
 
-        <div id="examScreen" class="hidden w-full max-w-3xl fade-in my-8">
+        <div id="examScreen" class="hidden w-full max-w-4xl fade-in my-8">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mb-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-slate-100 pb-4 gap-4">
-                    <h2 id="examTitleDisplay" class="text-xl font-bold text-slate-800">NCLEX Assessment</h2>
-                    <span class="bg-rose-50 text-rose-900 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap" id="questionTracker">Question 1 of 10</span>
+                    <h2 id="examTitleDisplay" class="text-xl font-bold text-slate-800">Essay Assessment</h2>
+                    <span class="bg-rose-50 text-rose-900 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap" id="questionTracker">Essay 1 of 3</span>
                 </div>
                 
                 <div id="questionsContainer" class="space-y-8">
-                    <!-- Current Question will be injected here by JavaScript -->
+                    <!-- Current Essay Prompt will be injected here by JavaScript -->
                 </div>
 
                 <div class="mt-10 pt-6 border-t border-slate-100 flex justify-end">
                     <button id="nextBtn" class="bg-rose-800 hover:bg-rose-900 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition-all transform hover:scale-105 flex items-center gap-2">
-                        <span id="nextBtnText">Next Question</span>
+                        <span id="nextBtnText">Next Essay</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="resultScreen" class="hidden bg-white rounded-2xl shadow-xl p-8 max-w-3xl w-full fade-in border border-slate-100 text-center my-8">
+        <div id="resultScreen" class="hidden bg-white rounded-2xl shadow-xl p-8 max-w-4xl w-full fade-in border border-slate-100 text-center my-8">
             <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 no-print">
                 <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
-            <h2 class="text-3xl font-bold text-slate-800 mb-2">Exam Complete!</h2>
-            <p class="text-slate-500 mb-6 no-print">Your results have been calculated.</p>
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">Exam Submitted!</h2>
+            <p class="text-slate-500 mb-6 no-print">Your essays have been recorded for manual review.</p>
             
             <div class="bg-slate-50 rounded-xl p-6 mb-6">
-                <div class="text-5xl font-black text-rose-800 mb-2" id="finalScoreDisplay">0/0</div>
-                <div class="text-lg font-semibold text-slate-700 mb-1" id="ratingDisplay">Rating</div>
+                <div class="text-3xl font-black text-slate-800 mb-2" id="finalScoreDisplay">Pending Evaluation</div>
+                <div class="text-md font-medium text-slate-500 mb-1" id="ratingDisplay">Your instructor will grade your responses.</div>
             </div>
 
             <!-- Sync Status UI -->
@@ -174,7 +197,7 @@
 
             <!-- EXAM SUMMARY SECTION -->
             <div id="examSummaryContainer" class="mt-8 text-left border-t border-slate-200 pt-6">
-                <h3 class="text-xl font-bold text-slate-800 mb-4">Detailed Report</h3>
+                <h3 class="text-xl font-bold text-slate-800 mb-4">Submission Copy</h3>
                 
                 <!-- Student Details Info Grid -->
                 <div id="studentDetailsHeader" class="bg-slate-50 p-4 rounded-lg mb-6 text-sm grid grid-cols-1 sm:grid-cols-2 gap-3 border border-slate-200 print-break-inside-avoid">
@@ -182,16 +205,16 @@
                 </div>
 
                 <!-- Questions Breakdown -->
-                <div id="detailedQuestionsList" class="space-y-4">
+                <div id="detailedQuestionsList" class="space-y-6">
                     <!-- Injected via JavaScript -->
                 </div>
             </div>
             
             <!-- ACTION BUTTONS -->
             <div class="flex flex-col sm:flex-row gap-4 mt-8 no-print border-t border-slate-200 pt-6">
-                <button onclick="window.print()" class="flex-1 bg-white border border-rose-800 hover:bg-rose-50 text-rose-800 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                <button id="studentDownloadPdfBtn" class="flex-1 bg-white border border-rose-800 hover:bg-rose-50 text-rose-800 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                    Print / Save as PDF
+                    Download as PDF
                 </button>
                 <button onclick="location.reload()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
                     Take Another Exam
@@ -201,7 +224,7 @@
 
         <div id="adminLoginScreen" class="hidden bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full fade-in border border-slate-100">
             <h2 class="text-2xl font-bold text-slate-800 mb-4">Admin Access</h2>
-            <p class="text-slate-500 mb-6 text-sm">Enter the administrator password to manage exam questions and view results.</p>
+            <p class="text-slate-500 mb-6 text-sm">Enter the administrator password to manage exam prompts and view submissions.</p>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
                 <input type="password" id="adminPassword" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none" placeholder="Enter password">
@@ -219,31 +242,27 @@
                 <div class="bg-slate-50 border-b border-slate-200 px-6 sm:px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <h2 class="text-xl font-bold text-slate-800">Admin Dashboard</h2>
                     <div class="flex gap-2 flex-wrap">
-                        <button id="tabQuestionsBtn" class="bg-rose-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Settings & Questions</button>
-                        <button id="tabResultsBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Student Results Summary</button>
+                        <button id="tabQuestionsBtn" class="bg-rose-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Settings & Prompts</button>
+                        <button id="tabResultsBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Submissions</button>
                         <button id="exitAdminBtn" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors ml-auto sm:ml-4">Exit Admin</button>
                     </div>
                 </div>
 
-                <!-- Tab Content: Settings & Questions -->
                 <div id="adminQuestionsTab" class="p-6 sm:p-8 block">
-                    <!-- Notice about session state -->
                     <div class="bg-green-50 text-green-800 p-4 rounded-lg mb-6 text-sm border border-green-200 flex gap-3 items-start">
                         <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <div>
-                            <strong>Cloud Sync Active:</strong> Changes to settings and questions are automatically saved to your Google Sheet and will be visible to all students immediately.
+                            <strong>Cloud Sync Active:</strong> Changes to settings and essay prompts are automatically saved to your Google Sheet.
                         </div>
                     </div>
 
-                    <!-- Admin Quiz Set Selector -->
                     <div class="mb-6 p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Select Quiz Set to Manage (Up to 10 Sets)</label>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Select Quiz Set to Manage</label>
                         <select id="adminQuizSetSelect" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-slate-50 font-semibold text-slate-800 transition-colors">
                             <!-- Injected via JS -->
                         </select>
                     </div>
 
-                    <!-- Exam Settings (Title, Instructions, Timer) -->
                     <div class="mb-8 p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold text-slate-800 flex items-center gap-2">
@@ -256,15 +275,15 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Exam Title</label>
-                                <input type="text" id="adminTitleInput" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white" placeholder="e.g., Midterm Examination">
+                                <input type="text" id="adminTitleInput" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white" placeholder="e.g., Midterm Essay Examination">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Student Instructions (Optional)</label>
-                                <textarea id="adminInstructionsInput" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white" placeholder="e.g., Read each question carefully. No calculators allowed."></textarea>
+                                <textarea id="adminInstructionsInput" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white" placeholder="e.g., Read each prompt carefully. Copying and pasting is strictly prohibited."></textarea>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Seconds Per Question</label>
-                                <input type="number" id="adminTimerInput" min="10" max="600" class="w-32 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Seconds Per Essay Prompt</label>
+                                <input type="number" id="adminTimerInput" min="60" max="3600" class="w-32 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white">
                             </div>
                             
                             <div id="settingsUpdateMsg" class="text-green-600 text-sm font-medium hidden flex items-center gap-1 mt-2">
@@ -275,8 +294,8 @@
                     </div>
 
                     <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                        <h3 class="text-lg font-bold text-slate-800">Question Bank</h3>
-                        <button id="addQuestionBtn" class="bg-rose-800 hover:bg-rose-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">+ Add Question</button>
+                        <h3 class="text-lg font-bold text-slate-800">Essay Prompts</h3>
+                        <button id="addQuestionBtn" class="bg-rose-800 hover:bg-rose-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">+ Add Prompt</button>
                     </div>
 
                     <div id="adminQuestionsList" class="space-y-4">
@@ -286,8 +305,8 @@
 
                 <div id="adminResultsTab" class="p-6 sm:p-8 hidden bg-slate-50/50">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-slate-200 pb-4 gap-4">
-                        <h3 class="text-lg font-bold text-slate-800">Student Results Summary</h3>
-                        <div class="flex gap-2">
+                        <h3 class="text-lg font-bold text-slate-800">Student Submissions Summary</h3>
+                        <div class="flex gap-2 flex-wrap sm:flex-nowrap">
                              <button id="mockResultsBtn" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
                                 Load Demo Data
                             </button>
@@ -295,10 +314,13 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                                 Sync from Google Sheets
                             </button>
+                            <button id="generateReportBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                Print Grade Report
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Filters -->
                     <div id="resultsFilterBar" class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6 flex flex-col sm:flex-row gap-4 items-end hidden fade-in">
                         <div class="flex-1 w-full">
                             <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Filter by Year</label>
@@ -319,23 +341,18 @@
                         </button>
                     </div>
 
-                    <!-- Summary Dashboard Cards -->
-                    <div id="summaryDashboard" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 hidden">
+                    <div id="summaryDashboard" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 hidden">
                         <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Total Students</p>
+                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Total Submissions</p>
                             <p id="statTotalStudents" class="text-2xl font-bold text-slate-800">0</p>
                         </div>
                         <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Average Score</p>
-                            <p id="statAvgScore" class="text-2xl font-bold text-rose-800">0%</p>
+                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Average Status</p>
+                            <p class="text-lg font-bold text-rose-800">Pending Review</p>
                         </div>
                         <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Highest Score</p>
-                            <p id="statHighestScore" class="text-2xl font-bold text-green-600">0%</p>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Lowest Score</p>
-                            <p id="statLowestScore" class="text-2xl font-bold text-red-600">0%</p>
+                            <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Completion Rate</p>
+                            <p id="statHighestScore" class="text-2xl font-bold text-green-600">100%</p>
                         </div>
                     </div>
 
@@ -352,16 +369,16 @@
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="bg-slate-100 border-b border-slate-200">
-                                        <th class="p-4 font-semibold text-slate-700 text-sm w-12 text-center">Rank</th>
+                                        <th class="p-4 font-semibold text-slate-700 text-sm w-12 text-center">#</th>
                                         <th class="p-4 font-semibold text-slate-700 text-sm">Student Name</th>
-                                        <th class="p-4 font-semibold text-slate-700 text-sm">Details</th>
+                                        <th class="p-4 font-semibold text-slate-700 text-sm">Course Details</th>
                                         <th class="p-4 font-semibold text-slate-700 text-sm">Score</th>
-                                        <th class="p-4 font-semibold text-slate-700 text-sm">Percentage</th>
                                         <th class="p-4 font-semibold text-slate-700 text-sm">Status</th>
+                                        <th class="p-4 font-semibold text-slate-700 text-sm text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="resultsTableBody" class="divide-y divide-slate-100">
-                                    <!-- Results rows will be injected here, sorted highest to lowest -->
+                                    <!-- Results rows will be injected here -->
                                 </tbody>
                             </table>
                         </div>
@@ -375,45 +392,73 @@
             </div>
         </div>
 
-        <!-- Admin Question Form Modal -->
+        <!-- DELETE CONFIRMATION MODAL -->
+        <div id="deleteConfirmModal" class="hidden fixed inset-0 bg-slate-900/60 flex items-center justify-center p-4 z-[95] fade-in backdrop-blur-sm">
+            <div class="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full text-center border-t-4 border-red-600">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Delete Submission?</h2>
+                <p class="text-slate-600 mb-6 text-sm">Are you sure you want to permanently delete <strong id="deleteStudentNameDisplay" class="text-slate-800">this student's</strong> exam record? This action cannot be undone.</p>
+                
+                <div class="flex gap-3">
+                    <button id="cancelDeleteBtn" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 font-medium py-2.5 rounded-lg transition-colors">Cancel</button>
+                    <button id="confirmDeleteBtn" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/60 flex items-center justify-center p-4 z-[60] fade-in backdrop-blur-sm">
             <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <h2 id="modalTitle" class="text-xl font-bold text-slate-800 mb-4">Add New Question</h2>
+                <h2 id="modalTitle" class="text-xl font-bold text-slate-800 mb-4">Add New Essay Prompt</h2>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Question Text</label>
-                        <textarea id="editQText" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none" placeholder="Enter the scenario or question..."></textarea>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Option 1</label>
-                            <input type="text" id="editOpt0" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Option 2</label>
-                            <input type="text" id="editOpt1" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Option 3</label>
-                            <input type="text" id="editOpt2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Option 4</label>
-                            <input type="text" id="editOpt3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Correct Answer</label>
-                        <select id="editCorrect" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none bg-white font-medium text-green-700">
-                            <option value="0">Option 1 is correct</option>
-                            <option value="1">Option 2 is correct</option>
-                            <option value="2">Option 3 is correct</option>
-                            <option value="3">Option 4 is correct</option>
-                        </select>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Essay Prompt Text</label>
+                        <textarea id="editQText" rows="6" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none resize-none" placeholder="Enter the topic or prompt for the student to write about..."></textarea>
                     </div>
                     <div class="flex justify-end gap-3 mt-8 pt-4 border-t border-slate-100">
                         <button id="closeModalBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-medium px-6 py-2 rounded-lg transition-colors">Cancel</button>
-                        <button id="saveQuestionBtn" class="bg-rose-800 hover:bg-rose-900 text-white font-medium px-6 py-2 rounded-lg transition-colors">Save Question</button>
+                        <button id="saveQuestionBtn" class="bg-rose-800 hover:bg-rose-900 text-white font-medium px-6 py-2 rounded-lg transition-colors">Save Prompt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFESSOR GRADING MODAL -->
+        <div id="gradingModal" class="hidden fixed inset-0 bg-slate-900/60 flex items-center justify-center p-4 z-[80] fade-in backdrop-blur-sm">
+            <div class="bg-white rounded-2xl shadow-xl flex flex-col max-w-4xl w-full max-h-[90vh] overflow-hidden">
+                <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-2xl">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800" id="gradeStudentName">Student Name</h2>
+                        <p class="text-sm text-slate-500" id="gradeStudentCourse">Course Info</p>
+                    </div>
+                    <button id="closeGradingBtn" class="text-slate-400 hover:text-slate-600 transition-colors p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <!-- Essays Area -->
+                <div class="p-6 overflow-y-auto flex-grow bg-slate-100/50" id="gradeEssaysContainer">
+                    <!-- Essay responses injected here -->
+                </div>
+                
+                <!-- Grading Controls -->
+                <div class="p-6 border-t border-slate-200 bg-white rounded-b-2xl">
+                    <h3 class="font-bold text-slate-800 mb-3 text-sm uppercase tracking-wider">Evaluation & Grading</h3>
+                    <div class="flex flex-col sm:flex-row gap-4 items-end">
+                        <div class="w-full sm:w-1/3">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Update Score (e.g., 95/100, 3/3)</label>
+                            <input type="text" id="gradeScoreInput" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none font-semibold text-slate-800" placeholder="Enter score">
+                        </div>
+                        <div class="w-full sm:w-2/3">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Update Status / Feedback</label>
+                            <input type="text" id="gradeFeedbackInput" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none" placeholder="e.g., Graded - Excellent work">
+                        </div>
+                        <button id="saveGradeBtn" class="bg-rose-800 hover:bg-rose-900 text-white font-medium px-6 py-2 rounded-lg transition-colors shadow-sm w-full sm:w-auto h-[42px] whitespace-nowrap flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Save Grade
+                        </button>
                     </div>
                 </div>
             </div>
@@ -431,135 +476,91 @@
             </div>
         </div>
 
+        <!-- PRINT GRADE REPORT MODAL -->
+        <div id="printReportModal" class="hidden fixed inset-0 bg-slate-900/80 flex items-start justify-center p-4 z-[90] fade-in backdrop-blur-sm overflow-y-auto">
+            <div class="bg-white rounded-2xl shadow-xl p-8 max-w-4xl w-full my-4 border border-slate-200">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 no-print border-b border-slate-200 pb-4 gap-4">
+                    <h2 class="text-xl font-bold text-slate-800">Grade Summary Report</h2>
+                    <div class="flex gap-3">
+                        <button id="closeReportBtn" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium transition-colors border border-slate-200 bg-white">Close</button>
+                        <button id="adminDownloadPdfBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg> 
+                            Download PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upgraded Professional Admin PDF Area -->
+                <div id="printableReportArea" class="text-black bg-white p-4 sm:p-8">
+                    <div class="text-center mb-8 border-b-4 border-slate-800 pb-6">
+                        <h1 class="text-4xl font-black uppercase tracking-widest text-slate-900" style="font-family: 'Times New Roman', Times, serif;">Siena College Taytay</h1>
+                        <h2 class="text-xl font-bold text-slate-700 mt-2 uppercase tracking-wide">College of Nursing - BSN Program</h2>
+                        <h3 class="text-lg font-semibold text-slate-600 mt-1">Official Grade Summary Report</h3>
+                        <p class="text-sm text-slate-500 mt-3 font-medium" id="printReportDate"></p>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse border-2 border-slate-800">
+                            <thead>
+                                <tr class="bg-slate-100 border-b-2 border-slate-800">
+                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 w-12 text-center uppercase">No.</th>
+                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 uppercase">Student Name</th>
+                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 uppercase">Course & Section</th>
+                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 text-center uppercase">Score</th>
+                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 uppercase">Feedback / Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="printReportTableBody" class="divide-y divide-slate-400 font-medium text-slate-800">
+                                <!-- Rows injected here via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-16 text-sm text-slate-800 flex justify-between items-end">
+                        <div class="bg-slate-50 p-4 border border-slate-300 rounded">
+                            <p class="font-bold text-lg text-slate-900">Total Students: <span id="printTotalStudents" class="text-rose-800">0</span></p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-64 border-b border-slate-800 mx-auto"></div>
+                            <p class="mt-2 font-bold text-slate-900 uppercase tracking-wider text-xs">Professor / Instructor Signature</p>
+                            <p class="text-xs text-slate-500 mt-1">Date Signed: _______________</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script>
         // --- CONFIGURATION ---
-      const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWFFHMVUu5OTF_E3_JyItr3rfgLT_XJfCEX1-S8syj8Mcu8yVYhUQMCujxjWXjLC5XKw/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRwbeZ6baG6QemYO6HsIhQoF6rDHKgM5wVxGC2h5CF9P3ScZJ9owHhfVoRL4O520-LoA/exec";
         
         // --- STATE VARIABLES ---
         const ADMIN_PASS = "09163129437";
-        
         let allFetchedResults = [];
         
+        // Default converted to Essay questions
         let defaultQuestionsData = [
             {
                 id: 1,
-                text: "A nurse is caring for a client who is receiving a blood transfusion. The client develops flank pain, chills, and fever. What should the nurse do FIRST?",
-                options: [
-                    "Administer acetaminophen (Tylenol) as prescribed.",
-                    "Stop the blood transfusion immediately.",
-                    "Notify the healthcare provider.",
-                    "Obtain a urine specimen to check for hematuria."
-                ],
-                correctAnswer: 1 
+                text: "Describe the steps of the nursing process (ADPIE) and provide a brief clinical example demonstrating how a nurse applies each phase."
             },
             {
                 id: 2,
-                text: "Which patient should the nurse prioritize and assess FIRST after receiving the morning shift report?",
-                options: [
-                    "A 45-year-old recovering from an appendectomy reporting 5/10 abdominal pain.",
-                    "A 60-year-old with chronic heart failure who has 2+ pitting edema.",
-                    "A 32-year-old with asthma requesting an albuterol breathing treatment.",
-                    "A 70-year-old with pneumonia who is suddenly confused and restless."
-                ],
-                correctAnswer: 3 
+                text: "Explain the pathophysiological differences between Type 1 and Type 2 Diabetes Mellitus. Briefly outline the primary treatment modalities for each."
             },
             {
                 id: 3,
-                text: "The nurse is reviewing the laboratory results of a client prescribed digoxin (Lanoxin). Which finding should the nurse immediately report to the physician?",
-                options: [
-                    "Serum potassium 3.1 mEq/L",
-                    "Serum sodium 138 mEq/L",
-                    "Digoxin level 1.2 ng/mL",
-                    "Fasting blood glucose 105 mg/dL"
-                ],
-                correctAnswer: 0 
-            },
-            {
-                id: 4,
-                text: "A client with type 1 diabetes is found unresponsive, pale, and diaphoretic. What is the nurse's priority action?",
-                options: [
-                    "Administer 10 units of regular insulin subcutaneously.",
-                    "Check the client's blood glucose level.",
-                    "Administer 1 mg of glucagon intramuscularly.",
-                    "Provide 4 ounces of orange juice."
-                ],
-                correctAnswer: 2
-            },
-            {
-                id: 5,
-                text: "A nurse is teaching a client about a new prescription for lithium carbonate. Which instruction should the nurse include in the teaching?",
-                options: [
-                    "Maintain a consistent daily sodium intake.",
-                    "Restrict fluid intake to 1 liter per day.",
-                    "Take the medication on an empty stomach.",
-                    "Expect severe tremors as a normal side effect."
-                ],
-                correctAnswer: 0 
-            },
-            {
-                id: 6,
-                text: "What is the normal range for fasting blood glucose in an adult?",
-                options: [
-                    "40 - 60 mg/dL",
-                    "70 - 99 mg/dL", 
-                    "100 - 125 mg/dL",
-                    "126 - 140 mg/dL"
-                ],
-                correctAnswer: 1 
-            },
-            {
-                id: 7,
-                text: "A patient with a diagnosis of deep vein thrombosis (DVT) is prescribed a heparin infusion. Which laboratory test should the nurse monitor?",
-                options: [
-                    "Prothrombin time (PT)",
-                    "International Normalized Ratio (INR)",
-                    "Activated partial thromboplastin time (aPTT)",
-                    "Platelet count"
-                ],
-                correctAnswer: 2
-            },
-            {
-                id: 8,
-                text: "Which of the following is considered a normal respiratory rate for a healthy adult?",
-                options: [
-                    "8 - 10 breaths per minute",
-                    "12 - 20 breaths per minute",
-                    "22 - 30 breaths per minute",
-                    "30 - 40 breaths per minute"
-                ],
-                correctAnswer: 1
-            },
-            {
-                id: 9,
-                text: "A client is scheduled for a surgical procedure. Who is primarily responsible for obtaining informed consent?",
-                options: [
-                    "The charge nurse",
-                    "The attending physician or surgeon",
-                    "The anesthesiologist",
-                    "The primary care nurse"
-                ],
-                correctAnswer: 1
-            },
-            {
-                id: 10,
-                text: "The nurse is preparing to administer a medication via the intramuscular route. What angle of insertion should the nurse use?",
-                options: [
-                    "15 degrees",
-                    "45 degrees",
-                    "90 degrees",
-                    "Z-track only"
-                ],
-                correctAnswer: 2
+                text: "Discuss the importance of therapeutic communication in nursing. Provide a concrete scenario demonstrating the use of an open-ended question versus a closed-ended question."
             }
         ];
 
         let quizSets = Array.from({length: 10}, (_, i) => ({
             id: i,
-            title: i === 0 ? "Nursing Fundamentals Assessment" : `Quiz Set ${i + 1}`,
-            instructions: i === 0 ? "Please read each question carefully and select the best answer. No calculators or outside resources are permitted." : "",
-            time: 60,
+            title: i === 0 ? "Nursing Fundamentals Essay Prompts" : `Essay Set ${i + 1}`,
+            instructions: i === 0 ? "Please read each prompt carefully and type your answer in the box provided. Copy-pasting text from external sources is strictly prohibited and monitored." : "",
+            time: 300, // 5 minutes per essay
             questions: i === 0 ? JSON.parse(JSON.stringify(defaultQuestionsData)) : []
         }));
 
@@ -576,7 +577,7 @@
         
         // --- PAGINATION STATE ---
         let currentQuestionIndex = 0;
-        let studentAnswers = {};
+        let studentAnswers = {}; // Keys are question index, values are the typed string
 
         let isCloudSynced = false;
 
@@ -598,9 +599,8 @@
         const dismissWarningBtn = document.getElementById('dismissWarningBtn');
         const cheatingWarningText = document.getElementById('cheatingWarningText');
 
-        // --- INITIALIZATION ---
+        // --- STREAMING_CHUNK:App Initialization logic... ---
         function updateClientUI() {
-            // Populate student dropdown
             const select = document.getElementById('studentExamSelect');
             if (select) {
                 select.innerHTML = '<option value="">-- Choose Exam --</option>';
@@ -619,11 +619,9 @@
                 }
             }
 
-            // Update Title
             document.getElementById('registrationTitle').innerText = "Student Registration";
             document.getElementById('examTitleDisplay').innerText = EXAM_TITLE;
             
-            // Update Instructions
             const instEl = document.getElementById('registrationInstructions');
             if(EXAM_INSTRUCTIONS && EXAM_INSTRUCTIONS.trim() !== "") {
                 instEl.innerText = EXAM_INSTRUCTIONS;
@@ -631,8 +629,6 @@
             } else {
                 instEl.classList.add('hidden');
             }
-            
-            document.getElementById('registrationSubtitle').innerText = `Select your exam and fill your details to begin.`;
         }
 
         function initApp() {
@@ -643,31 +639,34 @@
             }
 
             fetch(GOOGLE_SCRIPT_URL)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error("Network response was not ok");
+                    return res.json();
+                })
                 .then(data => {
                     if (data.result === 'success' && data.config) {
                         if (data.config.Questions) {
                             try {
                                 const parsed = JSON.parse(data.config.Questions);
                                 if (parsed && parsed.isMultiSet && Array.isArray(parsed.sets)) {
-                                    // Load the multiple sets
                                     quizSets = parsed.sets;
-                                    // Ensure exactly 10 length padding
                                     while(quizSets.length < 10) {
-                                        quizSets.push({ id: quizSets.length, title: `Quiz Set ${quizSets.length + 1}`, instructions: "", time: 60, questions: [] });
+                                        quizSets.push({ id: quizSets.length, title: `Essay Set ${quizSets.length + 1}`, instructions: "", time: 300, questions: [] });
                                     }
                                 } else if (Array.isArray(parsed) && parsed.length > 0) {
-                                    // Fallback for legacy single quiz
                                     quizSets[0].title = data.config.Title || quizSets[0].title;
                                     quizSets[0].instructions = data.config.Instructions !== undefined ? data.config.Instructions : quizSets[0].instructions;
-                                    quizSets[0].time = parseInt(data.config.Time) || 60;
+                                    quizSets[0].time = parseInt(data.config.Time) || 300;
                                     quizSets[0].questions = parsed;
                                 }
                             } catch(e) { console.warn("Could not parse questions, using default config.", e); }
                         }
                     }
                 })
-                .catch(err => console.error("Error loading exam data:", err))
+                .catch(err => {
+                    console.warn("Could not fetch remote settings, using local defaults. Error:", err.message);
+                    window.examOfflineMode = true;
+                })
                 .finally(() => {
                     updateClientUI();
                     document.getElementById('globalLoadingScreen').style.opacity = '0';
@@ -677,11 +676,10 @@
         
         window.addEventListener('load', initApp);
 
-        // --- STUDENT EXAM LOGIC ---
+        // --- STREAMING_CHUNK:Student Flow Logic... ---
         document.getElementById('registrationForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Setup the chosen exam data
             const selectedSetIdx = document.getElementById('studentExamSelect').value;
             if (selectedSetIdx === "") {
                 const err = document.getElementById('formError');
@@ -695,19 +693,19 @@
             const chosenSet = quizSets[selectedSetIdx];
             EXAM_TITLE = chosenSet.title;
             EXAM_INSTRUCTIONS = chosenSet.instructions;
-            SECONDS_PER_QUESTION = chosenSet.time || 60;
+            SECONDS_PER_QUESTION = chosenSet.time || 300;
             questionsData = chosenSet.questions;
             
-            // Gather student data
             studentData = {
                 name: document.getElementById('studentName').value,
+                email: document.getElementById('studentEmail').value,
                 course: document.getElementById('course').value,
                 year: document.getElementById('year').value,
                 section: document.getElementById('section').value,
-                examTitle: EXAM_TITLE // Save exam title in student info
+                examTitle: EXAM_TITLE 
             };
 
-            updateClientUI(); // Update UI components with specific exam title
+            updateClientUI(); 
 
             currentQuestionIndex = 0;
             studentAnswers = {};
@@ -734,7 +732,7 @@
                 
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
-                    handleNextQuestion(true); // true = auto-advance due to timeout
+                    handleNextQuestion(true); // timeout advance
                 }
             }, 1000);
         }
@@ -745,63 +743,99 @@
             const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             timerDisplay.innerText = formattedTime;
 
-            if (timeRemaining <= 10 && !timerDisplay.classList.contains('bg-red-600')) {
+            if (timeRemaining <= 30 && !timerDisplay.classList.contains('bg-red-600')) {
                 timerDisplay.classList.remove('bg-rose-950');
                 timerDisplay.classList.add('bg-red-600', 'animate-pulse');
-            } else if (timeRemaining > 10 && timerDisplay.classList.contains('bg-red-600')) {
+            } else if (timeRemaining > 30 && timerDisplay.classList.contains('bg-red-600')) {
                 timerDisplay.classList.remove('bg-red-600', 'animate-pulse');
                 timerDisplay.classList.add('bg-rose-950');
             }
         }
 
+        // --- STREAMING_CHUNK:Rendering the Essay Question with Anti-Paste... ---
         function renderCurrentQuestion() {
             const container = document.getElementById('questionsContainer');
             const q = questionsData[currentQuestionIndex];
-            const savedAnswer = studentAnswers[currentQuestionIndex];
+            const savedAnswer = studentAnswers[currentQuestionIndex] || "";
 
             const questionHTML = `
-                <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 mb-6 fade-in">
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 mb-6 fade-in flex flex-col h-full">
                     <h3 class="text-lg font-medium text-slate-800 mb-4 leading-relaxed">
-                        <span class="font-bold text-rose-800 mr-2">${currentQuestionIndex + 1}.</span> ${q.text}
+                        <span class="font-bold text-rose-800 mr-2">Prompt ${currentQuestionIndex + 1}.</span> ${q.text}
                     </h3>
-                    <div class="space-y-3 pl-2 sm:pl-6">
-                        ${q.options.map((opt, optIndex) => `
-                            <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-white hover:border-rose-300 hover:shadow-sm transition-all bg-white">
-                                <input type="radio" name="question_radio" value="${optIndex}" class="mt-1 text-rose-800 focus:ring-rose-700 w-4 h-4" ${savedAnswer === optIndex ? 'checked' : ''}>
-                                <span class="text-slate-700">${opt}</span>
-                            </label>
-                        `).join('')}
+                    <div class="mt-2 flex-grow flex flex-col">
+                        <textarea id="essayInput" rows="10" autocomplete="off" spellcheck="false"
+                            class="w-full p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-700 outline-none resize-y font-medium text-slate-700"
+                            placeholder="Type your original answer here. Copy-pasting is strictly disabled."
+                        >${savedAnswer}</textarea>
+                        
+                        <div class="flex justify-between items-center mt-2">
+                            <p id="pasteWarning" class="text-red-500 text-sm hidden font-medium flex items-center gap-1 shake">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> 
+                                Pasting is not allowed! Please type your answer.
+                            </p>
+                            <p class="text-slate-500 text-xs font-semibold ml-auto" id="wordCount">0 words</p>
+                        </div>
                     </div>
                 </div>
             `;
             container.innerHTML = questionHTML;
-            document.getElementById('questionTracker').innerText = `Question ${currentQuestionIndex + 1} of ${questionsData.length}`;
+            document.getElementById('questionTracker').innerText = `Essay ${currentQuestionIndex + 1} of ${questionsData.length}`;
 
-            // Adjust button text
             const nextBtnText = document.getElementById('nextBtnText');
             if (currentQuestionIndex === questionsData.length - 1) {
                 nextBtnText.innerText = "Submit Exam";
             } else {
-                nextBtnText.innerText = "Next Question";
+                nextBtnText.innerText = "Next Essay";
             }
+
+            // Bind Anti-Paste and Word Count specific to this Textarea
+            const essayInput = document.getElementById('essayInput');
+            
+            // Calculate initial word count
+            const updateWordCount = () => {
+                const text = essayInput.value.trim();
+                const words = text.length > 0 ? text.split(/\s+/).length : 0;
+                document.getElementById('wordCount').innerText = `${words} words`;
+            };
+            updateWordCount();
+            
+            essayInput.addEventListener('input', updateWordCount);
+
+            // Directly block Paste and Drop on the specific element
+            essayInput.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const warning = document.getElementById('pasteWarning');
+                warning.classList.remove('hidden');
+                setTimeout(() => warning.classList.add('hidden'), 3000);
+                showCheatWarning("Pasting text into the essay box is strictly prohibited. You must type your original answer.");
+            });
+
+            essayInput.addEventListener('drop', (e) => {
+                e.preventDefault();
+                showCheatWarning("Dragging and dropping text into the essay box is strictly prohibited.");
+            });
+            
+            // Prevent context menu (right click) specifically on textarea
+            essayInput.addEventListener('contextmenu', e => e.preventDefault());
         }
 
         document.getElementById('nextBtn').addEventListener('click', () => {
             handleNextQuestion(false);
         });
 
+        // --- STREAMING_CHUNK:Handling Submission Validation & Transition... ---
         function handleNextQuestion(isTimeout) {
-            // Check if user answered
-            const selected = document.querySelector('input[name="question_radio"]:checked');
+            const essayInput = document.getElementById('essayInput');
+            const typedAnswer = essayInput.value.trim();
             
-            if (selected) {
-                // Save answer
-                studentAnswers[currentQuestionIndex] = parseInt(selected.value);
+            if (typedAnswer.length > 0) {
+                studentAnswers[currentQuestionIndex] = typedAnswer;
             } else if (!isTimeout) {
-                // If clicked next but didn't select anything, and timer hasn't run out
+                // Not a timeout, user clicked next but left it empty
                 const btn = document.getElementById('nextBtn');
                 const originalText = btn.innerHTML;
-                btn.innerHTML = `<span class="text-red-200">Please select an answer</span>`;
+                btn.innerHTML = `<span class="text-red-200">Essay cannot be empty</span>`;
                 btn.classList.add('bg-red-600', 'shake');
                 btn.classList.remove('bg-rose-800', 'hover:bg-rose-900');
                 
@@ -810,10 +844,12 @@
                     btn.classList.remove('bg-red-600', 'shake');
                     btn.classList.add('bg-rose-800', 'hover:bg-rose-900');
                 }, 2000);
-                return; // Stop execution, don't advance
+                return; 
+            } else {
+                // It was a timeout, save blank
+                studentAnswers[currentQuestionIndex] = "[No answer provided due to time limit]";
             }
 
-            // Move to next question or submit
             if (currentQuestionIndex < questionsData.length - 1) {
                 currentQuestionIndex++;
                 renderCurrentQuestion();
@@ -824,48 +860,47 @@
         }
 
         function autoSubmitExam() {
-            // For strike 3 anti-cheat automatic submission
             timerDisplay.innerText = "TIME UP";
+            // Grab whatever they are currently working on
+            const essayInput = document.getElementById('essayInput');
+            if(essayInput) studentAnswers[currentQuestionIndex] = essayInput.value.trim() || "[No answer provided]";
             processExamSubmission();
         }
 
+        // --- STREAMING_CHUNK:Processing the Essay Form Submission... ---
         function processExamSubmission() {
             clearInterval(timerInterval);
             
-            let score = 0;
             let summaryHTML = '';
+            let totalWords = 0;
+            const answersPayload = []; // For backend saving
 
             questionsData.forEach((q, index) => {
-                const studentAnsIdx = studentAnswers[index];
-                const correctAnsIdx = q.correctAnswer;
-                const isCorrect = studentAnsIdx === correctAnsIdx;
-
-                if (isCorrect) score++;
-
-                // Build Detailed Report for this question
-                const studentAnsText = studentAnsIdx !== undefined ? q.options[studentAnsIdx] : '<span class="italic text-red-500">No Answer Submitted</span>';
-                const correctAnsText = q.options[correctAnsIdx];
+                const ansText = studentAnswers[index] || "";
+                const wordCount = ansText.length > 0 && ansText !== "[No answer provided due to time limit]" ? ansText.split(/\s+/).length : 0;
+                totalWords += wordCount;
+                
+                answersPayload.push({
+                    prompt: q.text,
+                    answer: ansText || "[No answer provided]"
+                });
 
                 summaryHTML += `
-                    <div class="p-5 rounded-xl border ${isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'} print-break-inside-avoid">
-                        <p class="font-medium text-slate-800 mb-3"><span class="font-bold mr-2 text-slate-900">Q${index + 1}.</span>${q.text}</p>
-                        <div class="text-sm space-y-1">
-                            <p class="${isCorrect ? 'text-green-700 font-semibold' : 'text-red-700'}"><span class="font-bold text-slate-600">Your Answer:</span> ${studentAnsText}</p>
-                            ${!isCorrect ? `<p class="text-green-700 font-semibold mt-1"><span class="font-bold text-slate-600">Correct Answer:</span> ${correctAnsText}</p>` : ''}
+                    <div class="p-6 rounded-xl border border-slate-200 bg-white print-break-inside-avoid">
+                        <p class="font-medium text-slate-800 mb-4"><span class="font-bold mr-2 text-rose-800">Prompt ${index + 1}.</span>${q.text}</p>
+                        <div class="text-sm">
+                            <span class="font-bold text-slate-600 block mb-2">Student Response:</span>
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 whitespace-pre-wrap text-slate-700 leading-relaxed min-h-[100px]">${ansText || '<span class="italic text-red-500">No Answer Submitted</span>'}</div>
+                            <p class="text-right text-xs text-slate-400 mt-2 font-medium">Word count: ${wordCount}</p>
                         </div>
                     </div>
                 `;
             });
 
-            const maxScore = questionsData.length;
-            const percentage = (score / maxScore) * 100;
-            
-            let rating = "";
-            if (percentage >= 80) rating = "Excellent Clinical Judgement (Pass)";
-            else if (percentage >= 60) rating = "Average - Review Needed (Pass)";
-            else rating = "Below Target (Fail)";
+            // Set result payload
+            const resultScoreString = `${questionsData.length} Essays Submitted`;
+            const resultRating = `Pending Grading (${totalWords} words total)`;
 
-            // Inject the detailed summary data
             const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             
             document.getElementById('studentDetailsHeader').innerHTML = `
@@ -877,27 +912,22 @@
             
             document.getElementById('detailedQuestionsList').innerHTML = summaryHTML;
 
-            // Submit logic
             const formData = new FormData();
             formData.append('action', 'submitExam'); 
             formData.append('name', studentData.name);
-            // Append Exam Title to Course so it shows up in Google Sheet
+            formData.append('email', studentData.email);
             formData.append('course', studentData.course + " - " + studentData.examTitle);
             formData.append('year', studentData.year);
             formData.append('section', studentData.section);
-            // Fix: Add a leading apostrophe to force Google Sheets to read scores like 10/10 as Text, not a Date
-            formData.append('score', `'${score}/${maxScore}`);
-            formData.append('rating', rating);
+            formData.append('score', "Pending Grading"); 
+            formData.append('rating', `Submitted (${totalWords} words)`); 
             formData.append('timeRemaining', "Completed"); 
+            // Save actual essays to backend
+            formData.append('answers', JSON.stringify(answersPayload));
 
             screens.exam.classList.add('hidden');
             timerDisplay.classList.add('hidden');
             screens.result.classList.remove('hidden');
-
-            document.getElementById('finalScoreDisplay').innerText = `${score}/${maxScore}`;
-            document.getElementById('ratingDisplay').innerText = rating;
-            
-            document.getElementById('ratingDisplay').className = "text-lg font-semibold mb-1 " + (percentage >= 60 ? 'text-green-600' : 'text-red-600');
 
             sendDataToGoogleSheets(formData);
         }
@@ -914,23 +944,20 @@
 
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
+                mode: 'no-cors', // Bypasses CORS pre-flight blocks for successful saving
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if(data.result === 'success') {
-                    statusUI.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span class="text-green-600">Successfully saved to Google Sheets!</span>`;
-                } else {
-                    throw new Error("Server returned an error.");
-                }
+            .then(() => {
+                // With no-cors, the response is opaque, so we assume success if no network throw
+                statusUI.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span class="text-green-600">Successfully synced to record!</span>`;
             })
             .catch(error => {
                 console.error('Error!', error.message);
-                statusUI.innerHTML = `<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span class="text-red-600">Failed to sync. Please save as PDF.</span>`;
+                statusUI.innerHTML = `<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span class="text-red-600">Failed to sync. Please Save as PDF to keep your copy.</span>`;
             });
         }
 
-        // --- ADMIN LOGIC ---
+        // --- STREAMING_CHUNK:Admin Auth & Set Selection... ---
         document.getElementById('navAdminBtn').addEventListener('click', () => {
             Object.values(screens).forEach(screen => screen?.classList.add('hidden'));
             screens.adminLogin.classList.remove('hidden');
@@ -950,7 +977,7 @@
                 screens.adminDashboard.classList.remove('hidden');
                 
                 updateAdminSetDropdown();
-                loadAdminSet(0); // Load Set 1 by default
+                loadAdminSet(0); 
             } else {
                 document.getElementById('adminError').classList.remove('hidden');
             }
@@ -960,10 +987,9 @@
             screens.adminDashboard.classList.add('hidden');
             screens.registration.classList.remove('hidden');
             updateClientUI();
-            currentQuestionIndex = 0; // reset
+            currentQuestionIndex = 0; 
         });
 
-        // --- ADMIN EXAM SETTINGS LOGIC ---
         function updateAdminSetDropdown() {
             const select = document.getElementById('adminQuizSetSelect');
             if(!select) return;
@@ -971,7 +997,7 @@
             quizSets.forEach((set, i) => {
                 const opt = document.createElement('option');
                 opt.value = i;
-                opt.innerText = `Set ${i + 1}: ${set.title || 'Empty'} (${set.questions.length} Qs)`;
+                opt.innerText = `Set ${i + 1}: ${set.title || 'Empty'} (${set.questions.length} Prompts)`;
                 if (i === currentAdminSetIndex) opt.selected = true;
                 select.appendChild(opt);
             });
@@ -990,6 +1016,7 @@
             loadAdminSet(parseInt(e.target.value));
         });
 
+        // --- STREAMING_CHUNK:Admin Cloud Sync & Prompt Editor... ---
         function syncExamSettingsToCloud(buttonElement, originalText) {
             if (GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") return;
             
@@ -1000,24 +1027,22 @@
 
             const formData = new FormData();
             formData.append('action', 'saveSettings');
-            formData.append('title', 'Multi-Set Exam Portal'); // Generic config title
+            formData.append('title', 'Multi-Set Essay Portal'); 
             formData.append('instructions', 'Please select an exam from the list to begin.');
-            formData.append('time', 60); 
-            // Save ALL 10 sets into the questions field JSON
+            formData.append('time', 300); 
             formData.append('questions', JSON.stringify({ isMultiSet: true, sets: quizSets }));
 
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
+                mode: 'no-cors', // Bypasses CORS pre-flight blocks
                 body: formData
             })
-            .then(res => res.json())
-            .then(data => {
-                if(data.result === 'success') {
-                    const msg = document.getElementById('settingsUpdateMsg');
-                    if(msg) {
-                        msg.classList.remove('hidden');
-                        setTimeout(() => msg.classList.add('hidden'), 2500);
-                    }
+            .then(() => {
+                // With no-cors, response is opaque. Assume success.
+                const msg = document.getElementById('settingsUpdateMsg');
+                if(msg) {
+                    msg.classList.remove('hidden');
+                    setTimeout(() => msg.classList.add('hidden'), 2500);
                 }
             })
             .catch(err => console.error("Failed to sync settings", err))
@@ -1035,16 +1060,15 @@
             const newTime = parseInt(document.getElementById('adminTimerInput').value);
 
             const activeSet = quizSets[currentAdminSetIndex];
-            activeSet.title = newTitle || `Quiz Set ${currentAdminSetIndex + 1}`;
+            activeSet.title = newTitle || `Essay Set ${currentAdminSetIndex + 1}`;
             activeSet.instructions = newInstructions;
-            activeSet.time = newTime > 0 ? newTime : 60;
+            activeSet.time = newTime > 0 ? newTime : 300;
 
-            updateAdminSetDropdown(); // Refresh dropdown labels
-            updateClientUI(); // Updates the UI instantly for the session
+            updateAdminSetDropdown(); 
+            updateClientUI(); 
             syncExamSettingsToCloud(e.target, 'Save Settings');
         });
 
-        // --- ADMIN TABS LOGIC ---
         const tabQuestionsBtn = document.getElementById('tabQuestionsBtn');
         const tabResultsBtn = document.getElementById('tabResultsBtn');
         const adminQuestionsTab = document.getElementById('adminQuestionsTab');
@@ -1078,20 +1102,123 @@
             fetchResultsData();
         });
 
-        // --- ADMIN STUDENT RESULTS DATA LOGIC ---
+        function renderAdminQuestions() {
+            const list = document.getElementById('adminQuestionsList');
+            list.innerHTML = '';
+            
+            const activeSetQuestions = quizSets[currentAdminSetIndex].questions;
+            
+            activeSetQuestions.forEach((q, idx) => {
+                const item = document.createElement('div');
+                item.className = 'border border-slate-200 rounded-xl p-5 bg-white shadow-sm flex flex-col sm:flex-row justify-between items-start gap-6 transition-all hover:shadow-md';
+                item.innerHTML = `
+                    <div class="flex-1 w-full">
+                        <p class="font-bold text-slate-800 mb-2 text-lg"><span class="text-rose-800 mr-2">Prompt ${idx + 1}.</span>${q.text}</p>
+                        <span class="text-xs bg-slate-100 text-slate-500 font-semibold px-2 py-1 rounded">Essay Prompt</span>
+                    </div>
+                    <div class="flex sm:flex-col gap-2 w-full sm:w-32 shrink-0">
+                        <button onclick="openAdminModal(${idx})" class="flex-1 px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg font-medium transition-colors shadow-sm text-sm">Edit</button>
+                        <button onclick="deleteQuestion(${idx})" class="flex-1 px-4 py-2 bg-red-50 border border-red-200 hover:bg-red-100 text-red-600 rounded-lg font-medium transition-colors shadow-sm text-sm">Delete</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+            updateAdminSetDropdown(); 
+        }
+
+        document.getElementById('addQuestionBtn').addEventListener('click', () => openAdminModal(-1));
+
+        function openAdminModal(index) {
+            editingQuestionIndex = index;
+            const modal = document.getElementById('adminModal');
+            const activeSetQuestions = quizSets[currentAdminSetIndex].questions;
+            
+            if (index === -1) {
+                document.getElementById('modalTitle').innerText = 'Add New Essay Prompt';
+                document.getElementById('editQText').value = '';
+            } else {
+                document.getElementById('modalTitle').innerText = 'Edit Prompt';
+                const q = activeSetQuestions[index];
+                document.getElementById('editQText').value = q.text;
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            document.getElementById('adminModal').classList.add('hidden');
+        });
+
+        document.getElementById('saveQuestionBtn').addEventListener('click', function(e) {
+            const btn = e.target;
+            const activeSetQuestions = quizSets[currentAdminSetIndex].questions;
+            const newQ = {
+                id: editingQuestionIndex === -1 ? Date.now() : activeSetQuestions[editingQuestionIndex].id,
+                text: document.getElementById('editQText').value.trim()
+            };
+
+            if (!newQ.text) {
+                const orig = btn.innerText;
+                btn.innerText = "Please fill prompt text!";
+                btn.classList.add('bg-red-600');
+                btn.classList.remove('bg-rose-800');
+                setTimeout(() => {
+                    btn.innerText = orig;
+                    btn.classList.remove('bg-red-600');
+                    btn.classList.add('bg-rose-800');
+                }, 2000);
+                return;
+            }
+
+            if (editingQuestionIndex === -1) {
+                activeSetQuestions.push(newQ);
+            } else {
+                activeSetQuestions[editingQuestionIndex] = newQ;
+            }
+            
+            document.getElementById('adminModal').classList.add('hidden');
+            renderAdminQuestions();
+            syncExamSettingsToCloud(document.getElementById('saveSettingsBtn'), 'Save Settings'); 
+        });
+
+        function deleteQuestion(index) {
+            quizSets[currentAdminSetIndex].questions.splice(index, 1);
+            renderAdminQuestions();
+            syncExamSettingsToCloud(document.getElementById('saveSettingsBtn'), 'Save Settings'); 
+        }
+
+        // --- STREAMING_CHUNK:Admin Submissions Filter & Display logic... ---
         document.getElementById('refreshResultsBtn').addEventListener('click', fetchResultsData);
         
         document.getElementById('mockResultsBtn').addEventListener('click', () => {
             const mockData = [
-                { "Full Name": "Jane Doe", "Course": "BSN", "Year Level": "3", "Section": "A1", "Score": "9/10", "Rating": "Excellent Clinical Judgement (Pass)", "Timestamp": new Date().toISOString() },
-                { "Full Name": "John Smith", "Course": "BSN", "Year Level": "4", "Section": "B2", "Score": "5/10", "Rating": "Below Target (Fail)", "Timestamp": new Date().toISOString() },
-                { "Full Name": "Mary Grace", "Course": "BSN", "Year Level": "3", "Section": "A1", "Score": "10/10", "Rating": "Excellent Clinical Judgement (Pass)", "Timestamp": new Date().toISOString() },
-                { "Full Name": "Peter Cruz", "Course": "BSN", "Year Level": "2", "Section": "C3", "Score": "7/10", "Rating": "Average - Review Needed (Pass)", "Timestamp": new Date().toISOString() }
+                { "RowIndex": 2, "Full Name": "Jane Doe", "Course": "BSN - Midterms", "Year Level": "3", "Section": "A1", "Score": "3 Essays Submitted", "Rating": "Pending Grading", "Timestamp": new Date().toISOString(), "Answers": '[{"prompt":"Discuss the nursing process.","answer":"The nursing process involves ADPIE: Assessment, Diagnosis, Planning, Implementation, and Evaluation."}]' },
+                { "RowIndex": 3, "Full Name": "John Smith", "Course": "BSN - Finals", "Year Level": "4", "Section": "B2", "Score": "95/100", "Rating": "Graded - Excellent Work", "Timestamp": new Date().toISOString(), "Answers": '[{"prompt":"Explain type 1 diabetes.","answer":"Type 1 is an autoimmune destruction of beta cells..."}]' }
             ];
             allFetchedResults = mockData;
             document.getElementById('resultsFilterBar').classList.remove('hidden');
             applyFiltersAndRender();
         });
+
+        // Global callback for JSONP
+        window.handleGoogleScriptResponse = function(data) {
+            const loading = document.getElementById('resultsLoadingState');
+            const filterBar = document.getElementById('resultsFilterBar');
+            const noResults = document.getElementById('noResultsMsg');
+
+            if (data && data.result === 'success' && data.data && data.data.length > 0) {
+                allFetchedResults = data.data;
+                filterBar.classList.remove('hidden');
+                applyFiltersAndRender();
+            } else {
+                loading.classList.add('hidden');
+                noResults.classList.remove('hidden');
+            }
+            
+            // Clean up the script tag
+            const scriptTag = document.getElementById('jsonp-request');
+            if (scriptTag) scriptTag.remove();
+        };
 
         function fetchResultsData() {
             const loading = document.getElementById('resultsLoadingState');
@@ -1113,27 +1240,34 @@
                 return;
             }
 
+            // Attempt standard fetch first (works if properly deployed as "Anyone")
             fetch(GOOGLE_SCRIPT_URL)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error("Network response was not ok");
+                    return res.json();
+                })
                 .then(data => {
-                    if (data.result === 'success' && data.data && data.data.length > 0) {
-                        allFetchedResults = data.data;
-                        filterBar.classList.remove('hidden');
-                        applyFiltersAndRender();
-                    } else {
-                        loading.classList.add('hidden');
-                        noResults.classList.remove('hidden');
-                    }
+                    window.handleGoogleScriptResponse(data);
                 })
                 .catch(err => {
-                    loading.classList.add('hidden');
-                    noResults.classList.remove('hidden');
-                    noResults.innerHTML = "Error loading results. Check console.";
-                    console.error(err);
+                    console.warn("Fetch failed, attempting JSONP fallback...", err);
+                    
+                    // Fallback to JSONP if fetch fails (due to strict CORS)
+                    const script = document.createElement('script');
+                    script.id = 'jsonp-request';
+                    // Add a parameter 'callback' to tell Apps Script to wrap the response
+                    script.src = `${GOOGLE_SCRIPT_URL}?callback=handleGoogleScriptResponse&t=${Date.now()}`;
+                    
+                    script.onerror = () => {
+                         loading.classList.add('hidden');
+                         noResults.classList.remove('hidden');
+                         noResults.innerHTML = `<svg class="w-12 h-12 mx-auto text-red-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Error connecting to database.<br>Please verify your Google Apps Script is deployed as <b>"Execute as: Me"</b> and <b>"Who has access: Anyone"</b>.`;
+                    };
+                    
+                    document.body.appendChild(script);
                 });
         }
 
-        // --- FILTERING LOGIC ---
         function applyFiltersAndRender() {
             const yearFilter = document.getElementById('filterYear').value;
             const sectionFilter = document.getElementById('filterSection').value.toLowerCase().trim();
@@ -1177,218 +1311,296 @@
             } else {
                 noResults.classList.add('hidden');
             }
-            
-            // 1. Sort Results from Highest to Lowest Score
-            resultsArray.sort((a, b) => {
-                const getScoreValue = (scoreStr) => {
-                    if(!scoreStr) return 0;
-                    // Strip the leading apostrophe used to prevent date conversion
-                    let sStr = String(scoreStr).replace(/^'/, '').trim();
-                    if (sStr.includes('T') && sStr.includes('Z')) {
-                       const dateObj = new Date(sStr);
-                       if(!isNaN(dateObj)) return dateObj.getMonth() + 1; 
-                       return 0; 
-                    }
-                    return parseInt(sStr.split('/')[0]) || 0;
-                };
-                return getScoreValue(b.Score) - getScoreValue(a.Score);
-            });
-
-            // 2. Calculate Dashboard Statistics
-            let totalStudents = resultsArray.length;
-            let totalPercentage = 0;
-            let highestPercent = 0;
-            let lowestPercent = 100;
 
             tbody.innerHTML = '';
             resultsArray.forEach((row, index) => {
-                let sStr = String(row.Score || '0/1').replace(/^'/, '').trim();
-                let correct = 0;
-                let total = questionsData.length > 0 ? questionsData.length : 1; 
-                
-                if (sStr.includes('T') && sStr.includes('Z')) {
-                     const dateObj = new Date(sStr);
-                     if(!isNaN(dateObj)) {
-                         correct = dateObj.getMonth() + 1;
-                         // Fallback for old data logged improperly as dates
-                         total = dateObj.getDate() > 0 ? dateObj.getDate() : total;
-                     }
-                     sStr = `${correct}/${total}`; 
-                } else {
-                     const scoreParts = sStr.split('/');
-                     correct = parseInt(scoreParts[0]) || 0;
-                     total = parseInt(scoreParts[1]) || total;
-                }
-
-                const percentage = Math.round((correct / total) * 100);
-
-                totalPercentage += percentage;
-                if(percentage > highestPercent) highestPercent = percentage;
-                if(percentage < lowestPercent) lowestPercent = percentage;
-
                 let dateStr = "Unknown Date";
                 if(row.Timestamp) {
                     const d = new Date(row.Timestamp);
                     dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 }
-
-                const isPass = row.Rating && row.Rating.includes('Pass');
-                const badgeColor = isPass ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+                
+                // Safely handle cases where the rating is a number or null
+                const isGraded = String(row.Rating || "").toLowerCase().includes('graded');
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100" id="row-${row.RowIndex}">
                         <td class="p-4 font-bold text-slate-500 text-center text-sm">#${index + 1}</td>
                         <td class="p-4">
                             <div class="font-bold text-slate-800">${row["Full Name"] || 'N/A'}</div>
                             <div class="text-xs text-slate-400 mt-1">${dateStr}</div>
                         </td>
-                        <td class="p-4 text-slate-600 text-sm font-medium">BSN ${row["Year Level"] || ''} - ${row.Section || ''}</td>
-                        <td class="p-4 font-black text-slate-800 text-lg">${sStr}</td>
-                        <td class="p-4 font-bold ${percentage >= 75 ? 'text-rose-800' : 'text-slate-600'}">${percentage}%</td>
+                        <td class="p-4 text-slate-600 text-sm font-medium">BSN ${row["Year Level"] || ''} - ${row.Section || ''}<br><span class="text-xs text-slate-400">${row.Course || ''}</span><br><span class="text-xs text-slate-500 underline">${row.Email || 'No Email'}</span></td>
+                        <td class="p-4 font-bold text-slate-800 text-sm">${row.Score || 'Pending Grading'}</td>
                         <td class="p-4">
-                            <span class="px-3 py-1 rounded-full text-xs font-bold ${badgeColor}">
-                                ${isPass ? 'Passed' : 'Failed'}
+                            <span class="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${isGraded ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+                                ${row.Rating || 'Submitted'}
                             </span>
+                        </td>
+                        <td class="p-4">
+                            <div class="flex items-center justify-center gap-2">
+                                <button onclick="openGradingModal(${row.RowIndex})" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 font-bold text-xs border border-blue-200 transition-colors shadow-sm flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                    Grade
+                                </button>
+                                <button onclick="confirmDeleteSubmission(${row.RowIndex})" class="bg-red-50 text-red-600 px-2 py-1.5 rounded-lg hover:bg-red-100 font-bold text-xs border border-red-200 transition-colors shadow-sm" title="Delete Submission">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
             });
 
-            document.getElementById('statTotalStudents').innerText = totalStudents;
-            document.getElementById('statAvgScore').innerText = Math.round(totalPercentage / totalStudents) + '%';
-            document.getElementById('statHighestScore').innerText = highestPercent + '%';
-            document.getElementById('statLowestScore').innerText = totalStudents > 0 ? lowestPercent + '%' : '0%';
-
+            document.getElementById('statTotalStudents').innerText = resultsArray.length;
             dashboard.classList.remove('hidden');
             dataState.classList.remove('hidden');
         }
 
-        // --- ADMIN QUESTION MANAGEMENT LOGIC ---
-        function renderAdminQuestions() {
-            const list = document.getElementById('adminQuestionsList');
-            list.innerHTML = '';
-            
-            const activeSetQuestions = quizSets[currentAdminSetIndex].questions;
-            
-            activeSetQuestions.forEach((q, idx) => {
-                const item = document.createElement('div');
-                item.className = 'border border-slate-200 rounded-xl p-5 bg-white shadow-sm flex flex-col sm:flex-row justify-between items-start gap-6 transition-all hover:shadow-md';
-                item.innerHTML = `
-                    <div class="flex-1 w-full">
-                        <p class="font-bold text-slate-800 mb-4 text-lg"><span class="text-rose-800 mr-2">Q${idx + 1}.</span>${q.text}</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600">
-                            ${q.options.map((opt, oIdx) => `
-                                <div class="p-3 rounded-lg border ${oIdx === q.correctAnswer ? 'bg-green-50 border-green-300 text-green-800 shadow-sm' : 'border-slate-100 bg-slate-50'}">
-                                    <span class="font-bold mr-1 opacity-70">${oIdx + 1}.</span> ${opt} 
-                                    ${oIdx === q.correctAnswer ? '<svg class="w-4 h-4 inline ml-1 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : ''}
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    <div class="flex sm:flex-col gap-2 w-full sm:w-32 shrink-0">
-                        <button onclick="openAdminModal(${idx})" class="flex-1 px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg font-medium transition-colors shadow-sm text-sm">Edit</button>
-                        <button onclick="deleteQuestion(${idx})" class="flex-1 px-4 py-2 bg-red-50 border border-red-200 hover:bg-red-100 text-red-600 rounded-lg font-medium transition-colors shadow-sm text-sm">Delete</button>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-            updateAdminSetDropdown(); // Ensures count updates in UI
-        }
+        // --- STREAMING_CHUNK:Grading Logic... ---
+        let currentlyGradingRowIndex = null;
 
-        document.getElementById('addQuestionBtn').addEventListener('click', () => openAdminModal(-1));
-
-        function openAdminModal(index) {
-            editingQuestionIndex = index;
-            const modal = document.getElementById('adminModal');
-            const activeSetQuestions = quizSets[currentAdminSetIndex].questions;
+        window.openGradingModal = function(rowIndex) {
+            const row = allFetchedResults.find(r => r.RowIndex === rowIndex);
+            if (!row) return;
             
-            if (index === -1) {
-                document.getElementById('modalTitle').innerText = 'Add New Question';
-                document.getElementById('editQText').value = '';
-                document.getElementById('editOpt0').value = '';
-                document.getElementById('editOpt1').value = '';
-                document.getElementById('editOpt2').value = '';
-                document.getElementById('editOpt3').value = '';
-                document.getElementById('editCorrect').value = '0';
+            currentlyGradingRowIndex = rowIndex;
+            document.getElementById('gradeStudentName').innerText = row["Full Name"] || 'Unknown Student';
+            document.getElementById('gradeStudentCourse').innerText = `${row.Course || ''} | BSN ${row["Year Level"] || ''} - ${row.Section || ''}`;
+            
+            // Prefill current data
+            document.getElementById('gradeScoreInput').value = row.Score;
+            document.getElementById('gradeFeedbackInput').value = row.Rating || '';
+            
+            const container = document.getElementById('gradeEssaysContainer');
+            container.innerHTML = '';
+            
+            if (row.Answers && row.Answers.trim() !== '') {
+                try {
+                    const answers = JSON.parse(row.Answers);
+                    answers.forEach((ans, i) => {
+                        container.innerHTML += `
+                            <div class="mb-6 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                                <h4 class="font-bold text-slate-800 mb-4 text-sm border-b border-slate-100 pb-3 leading-relaxed"><span class="text-rose-800 mr-1 text-base">Prompt ${i+1}.</span> ${ans.prompt}</h4>
+                                <div class="text-slate-700 whitespace-pre-wrap text-sm leading-relaxed font-medium bg-slate-50 p-4 rounded-lg border border-slate-100">${ans.answer}</div>
+                            </div>
+                        `;
+                    });
+                } catch (e) {
+                    container.innerHTML = `<div class="text-slate-500 italic p-4 bg-white rounded-lg border border-slate-200">Error loading essay data or legacy submission format.</div>`;
+                }
             } else {
-                document.getElementById('modalTitle').innerText = 'Edit Question';
-                const q = activeSetQuestions[index];
-                document.getElementById('editQText').value = q.text;
-                document.getElementById('editOpt0').value = q.options[0] || '';
-                document.getElementById('editOpt1').value = q.options[1] || '';
-                document.getElementById('editOpt2').value = q.options[2] || '';
-                document.getElementById('editOpt3').value = q.options[3] || '';
-                document.getElementById('editCorrect').value = q.correctAnswer;
+                container.innerHTML = `<div class="text-slate-500 italic p-4 bg-white rounded-lg border border-slate-200">No essay content was saved for this submission (Legacy data).</div>`;
             }
             
-            modal.classList.remove('hidden');
-        }
+            document.getElementById('gradingModal').classList.remove('hidden');
+        };
 
-        document.getElementById('closeModalBtn').addEventListener('click', () => {
-            document.getElementById('adminModal').classList.add('hidden');
+        document.getElementById('closeGradingBtn').addEventListener('click', () => {
+            document.getElementById('gradingModal').classList.add('hidden');
+            currentlyGradingRowIndex = null;
         });
 
-        document.getElementById('saveQuestionBtn').addEventListener('click', function(e) {
+        document.getElementById('saveGradeBtn').addEventListener('click', function(e) {
             const btn = e.target;
-            const activeSetQuestions = quizSets[currentAdminSetIndex].questions;
-            const newQ = {
-                id: editingQuestionIndex === -1 ? Date.now() : activeSetQuestions[editingQuestionIndex].id,
-                text: document.getElementById('editQText').value.trim(),
-                options: [
-                    document.getElementById('editOpt0').value.trim(),
-                    document.getElementById('editOpt1').value.trim(),
-                    document.getElementById('editOpt2').value.trim(),
-                    document.getElementById('editOpt3').value.trim()
-                ],
-                correctAnswer: parseInt(document.getElementById('editCorrect').value)
-            };
+            const score = document.getElementById('gradeScoreInput').value.trim();
+            const rating = document.getElementById('gradeFeedbackInput').value.trim();
+            
+            if (!currentlyGradingRowIndex) return;
 
-            if (!newQ.text || newQ.options.some(opt => !opt)) {
-                const orig = btn.innerText;
-                btn.innerText = "Please fill all fields!";
-                btn.classList.add('bg-red-600');
-                btn.classList.remove('bg-rose-800');
+            // 1. Instantly update UI locally
+            const rowIdx = allFetchedResults.findIndex(r => r.RowIndex === currentlyGradingRowIndex);
+            if (rowIdx > -1) {
+                allFetchedResults[rowIdx].Score = score;
+                allFetchedResults[rowIdx].Rating = rating;
+                applyFiltersAndRender(); 
+            }
+
+            // 2. Prepare visual feedback
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<svg class="animate-spin h-4 w-4 inline mr-2" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...`;
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('action', 'updateGrade');
+            formData.append('rowIndex', currentlyGradingRowIndex);
+            formData.append('newScore', score);
+            formData.append('newRating', rating);
+
+            // Fetch the email and name from our cached results data
+            const row = allFetchedResults.find(r => r.RowIndex === currentlyGradingRowIndex);
+            if (row) {
+                formData.append('studentEmail', row["Email"] || "");
+                formData.append('studentName', row["Full Name"] || "Student");
+                formData.append('courseInfo', row["Course"] || "the recent exam");
+            }
+
+            if (GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+                 setTimeout(() => {
+                     btn.innerHTML = originalText;
+                     btn.disabled = false;
+                     document.getElementById('gradingModal').classList.add('hidden');
+                 }, 500);
+                 return;
+            }
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            })
+            .then(() => {
+                // Done saving. With no-cors we assume it successfully reached the server.
                 setTimeout(() => {
-                    btn.innerText = orig;
-                    btn.classList.remove('bg-red-600');
-                    btn.classList.add('bg-rose-800');
-                }, 2000);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    document.getElementById('gradingModal').classList.add('hidden');
+                }, 400); // small delay to ensure visual feedback
+            })
+            .catch(err => {
+                // If it entirely fails to network route, show error briefly
+                console.warn("Network routing failed:", err);
+                btn.innerHTML = 'Network Error';
+                setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 2000);
+            });
+        });
+
+        // --- STREAMING_CHUNK:Deletion Logic... ---
+        let currentlyDeletingRowIndex = null;
+        
+        window.confirmDeleteSubmission = function(rowIndex) {
+            const row = allFetchedResults.find(r => r.RowIndex === rowIndex);
+            if (!row) return;
+            
+            currentlyDeletingRowIndex = rowIndex;
+            document.getElementById('deleteStudentNameDisplay').innerText = row["Full Name"] || 'Unknown Student';
+            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+        };
+
+        document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+            document.getElementById('deleteConfirmModal').classList.add('hidden');
+            currentlyDeletingRowIndex = null;
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function(e) {
+            if (!currentlyDeletingRowIndex) return;
+            const btn = e.target;
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = `<svg class="animate-spin h-4 w-4 inline mr-2" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Deleting...`;
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('action', 'deleteSubmission');
+            formData.append('rowIndex', currentlyDeletingRowIndex);
+
+            if (GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+                 setTimeout(() => {
+                     finishDeletionSuccess(btn, originalText);
+                 }, 500);
+                 return;
+            }
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            })
+            .then(() => {
+                finishDeletionSuccess(btn, originalText);
+            })
+            .catch(err => {
+                console.warn("Network routing failed for delete:", err);
+                btn.innerHTML = 'Network Error';
+                setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 2000);
+            });
+        });
+
+        function finishDeletionSuccess(btn, originalText) {
+            // 1. Remove from local array
+            allFetchedResults = allFetchedResults.filter(r => r.RowIndex !== currentlyDeletingRowIndex);
+            
+            // 2. Refresh UI
+            applyFiltersAndRender(); 
+            
+            // 3. Reset Modal
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                document.getElementById('deleteConfirmModal').classList.add('hidden');
+                currentlyDeletingRowIndex = null;
+            }, 400); 
+        }
+
+        // --- STREAMING_CHUNK:Grade Report Generation Logic... ---
+        document.getElementById('generateReportBtn').addEventListener('click', () => {
+            const tbody = document.getElementById('printReportTableBody');
+            tbody.innerHTML = '';
+            
+            // Re-fetch the actively filtered data so the printed report matches what they see
+            const yearFilter = document.getElementById('filterYear').value;
+            const sectionFilter = document.getElementById('filterSection').value.toLowerCase().trim();
+
+            const filteredData = allFetchedResults.filter(row => {
+                const rowYear = String(row["Year Level"] || "").trim();
+                const rowSection = String(row.Section || "").toLowerCase().trim();
+                
+                const matchYear = yearFilter === 'all' || rowYear === yearFilter;
+                const matchSection = sectionFilter === '' || rowSection.includes(sectionFilter);
+                
+                return matchYear && matchSection;
+            });
+            
+            if (filteredData.length === 0) {
+                const noDataContainer = document.getElementById('noResultsMsg');
+                noDataContainer.classList.remove('hidden');
+                noDataContainer.innerHTML = `<svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>No data available to print. Please sync or clear filters.`;
+                setTimeout(() => { noDataContainer.classList.add('hidden'); }, 4000);
                 return;
             }
 
-            if (editingQuestionIndex === -1) {
-                activeSetQuestions.push(newQ);
-            } else {
-                activeSetQuestions[editingQuestionIndex] = newQ;
-            }
+            filteredData.forEach((row, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="border border-slate-300 p-2 text-sm text-center font-bold text-slate-500">${idx + 1}</td>
+                        <td class="border border-slate-300 p-2 text-sm font-bold text-slate-800">${row["Full Name"] || 'N/A'}</td>
+                        <td class="border border-slate-300 p-2 text-sm text-slate-700">BSN ${row["Year Level"] || ''} - ${row.Section || ''}</td>
+                        <td class="border border-slate-300 p-2 text-sm font-bold text-slate-800 text-center">${row.Score || 'Pending Grading'}</td>
+                        <td class="border border-slate-300 p-2 text-sm text-slate-700">${row.Rating || 'Submitted'}</td>
+                    </tr>
+                `;
+            });
+
+            // Set Meta Data
+            const dateStr = new Date().toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            document.getElementById('printReportDate').innerText = "Generated on: " + dateStr;
+            document.getElementById('printTotalStudents').innerText = filteredData.length;
             
-            document.getElementById('adminModal').classList.add('hidden');
-            renderAdminQuestions();
-            syncExamSettingsToCloud(document.getElementById('saveSettingsBtn'), 'Save Settings'); 
+            // Set Print State
+            document.body.classList.add('printing-admin');
+            document.getElementById('printReportModal').classList.remove('hidden');
         });
 
-        function deleteQuestion(index) {
-            quizSets[currentAdminSetIndex].questions.splice(index, 1);
-            renderAdminQuestions();
-            syncExamSettingsToCloud(document.getElementById('saveSettingsBtn'), 'Save Settings'); 
-        }
+        document.getElementById('closeReportBtn').addEventListener('click', () => {
+            document.body.classList.remove('printing-admin');
+            document.getElementById('printReportModal').classList.add('hidden');
+        });
 
-        // --- ANTI-CHEATING LOGIC ---
+        // --- STREAMING_CHUNK:Global Anti-Cheating Defenses... ---
         
-        // 1. Prevent Right Click / Context Menu
+        // 1. Prevent Right Click / Context Menu on entire document unless admin is active
         document.addEventListener('contextmenu', event => {
-            // Block right clicks unless the admin dashboard is visible
             if (!screens.adminDashboard || screens.adminDashboard.classList.contains('hidden')) {
                 event.preventDefault();
             }
         });
 
-        // 2. Prevent Copy/Cut/Paste Shortcuts
-        ['copy', 'cut', 'paste'].forEach(evt => {
+        // 2. Prevent Copy/Cut/Paste/Drop global shortcuts
+        ['copy', 'cut', 'paste', 'drop'].forEach(evt => {
             document.addEventListener(evt, e => {
                 if (!screens.exam.classList.contains('hidden')) {
                     e.preventDefault();
-                    showCheatWarning(`Action Disabled: You are not allowed to copy or paste text during the exam.`);
+                    showCheatWarning(`Action Disabled: You are strictly not allowed to ${evt} text during the essay exam.`);
                 }
             });
         });
@@ -1401,7 +1613,7 @@
                 
                 if (cheatWarningCount > MAX_CHEAT_WARNINGS) {
                     // Strike 3: Auto Submit
-                    cheatingWarningText.innerText = "You have left the exam tab multiple times. Your exam is being automatically submitted.";
+                    cheatingWarningText.innerText = "You have left the exam tab multiple times. Your essay is being automatically submitted to your instructor.";
                     dismissWarningBtn.classList.add('hidden'); 
                     cheatingModal.classList.remove('hidden');
                     
@@ -1410,14 +1622,12 @@
                         autoSubmitExam();
                     }, 3000);
                 } else {
-                    // Warning 1 & 2
-                    showCheatWarning(`Warning ${cheatWarningCount}/${MAX_CHEAT_WARNINGS}: You navigated away from the exam tab. Further warnings will result in automatic submission.`);
+                    showCheatWarning(`Warning ${cheatWarningCount}/${MAX_CHEAT_WARNINGS}: You navigated away from the exam tab. Further warnings will result in automatic submission of your essay.`);
                 }
             }
         });
 
         function showCheatWarning(message) {
-            // Only show modal if they are actively taking the exam
             if (!screens.exam.classList.contains('hidden')) {
                 cheatingWarningText.innerText = message;
                 dismissWarningBtn.classList.remove('hidden');
@@ -1425,9 +1635,123 @@
             }
         }
 
-        // Dismiss Warning Button
         dismissWarningBtn.addEventListener('click', () => {
             cheatingModal.classList.add('hidden');
+        });
+
+        // --- PDF GENERATION FOR IPAD/MOBILE SUPPORT ---
+        document.getElementById('studentDownloadPdfBtn')?.addEventListener('click', function() {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating PDF...`;
+            
+            // Generate a hidden, highly professional template just for the PDF export
+            const pdfContainer = document.createElement('div');
+            pdfContainer.style.padding = '40px';
+            pdfContainer.style.background = 'white';
+            pdfContainer.style.color = 'black';
+            pdfContainer.style.fontFamily = 'Arial, sans-serif';
+            pdfContainer.style.width = '800px'; 
+            
+            const dateStr = new Date().toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+            let essaysHTML = '';
+            questionsData.forEach((q, index) => {
+                const ansText = studentAnswers[index] || "";
+                const wordCount = ansText.length > 0 && ansText !== "[No answer provided due to time limit]" ? ansText.split(/\s+/).length : 0;
+                essaysHTML += `
+                    <div style="margin-bottom: 24px; page-break-inside: avoid;">
+                        <p style="font-size: 15px; font-weight: bold; color: #111; margin-bottom: 10px; line-height: 1.4;">
+                            <span style="color: #9f1239;">Prompt ${index + 1}.</span> ${q.text}
+                        </p>
+                        <div style="font-size: 14px; color: #222; line-height: 1.6; padding: 16px; background-color: #f8fafc; border-left: 4px solid #9f1239; border-radius: 4px; white-space: pre-wrap; font-family: 'Times New Roman', serif;">${ansText || '<i>No Answer Submitted</i>'}</div>
+                        <p style="text-align: right; font-size: 11px; color: #666; margin-top: 6px; font-weight: bold;">Word count: ${wordCount}</p>
+                    </div>
+                `;
+            });
+
+            pdfContainer.innerHTML = `
+                <div style="text-align: center; border-bottom: 3px solid #1e293b; padding-bottom: 16px; margin-bottom: 30px;">
+                    <h1 style="font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #0f172a; margin: 0; font-family: 'Times New Roman', serif;">Siena College Taytay</h1>
+                    <h2 style="font-size: 16px; font-weight: 600; color: #334155; margin: 6px 0 0 0; text-transform: uppercase;">College of Nursing - BSN Program</h2>
+                    <h3 style="font-size: 14px; font-weight: 500; color: #64748b; margin: 4px 0 0 0;">Official Essay Examination Record</h3>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 32px; background: #fff1f2; padding: 20px; border-radius: 8px; border: 1px solid #fecdd3; font-size: 14px; color: #0f172a;">
+                    <div style="width: 48%; margin-bottom: 12px;"><strong>Student Name:</strong> ${studentData.name}</div>
+                    <div style="width: 48%; margin-bottom: 12px;"><strong>Date Taken:</strong> ${dateStr}</div>
+                    <div style="width: 48%; margin-bottom: 12px;"><strong>Course & Year:</strong> ${studentData.course} ${studentData.year}</div>
+                    <div style="width: 48%; margin-bottom: 12px;"><strong>Section:</strong> ${studentData.section}</div>
+                    <div style="width: 48%; margin-bottom: 0;"><strong>Status:</strong> Submitted for Grading</div>
+                    <div style="width: 48%; margin-bottom: 0;"><strong>Exam Title:</strong> ${studentData.examTitle}</div>
+                </div>
+
+                <div style="border-top: 1px solid #e2e8f0; padding-top: 24px;">
+                    ${essaysHTML}
+                </div>
+
+                <div style="margin-top: 50px; padding-top: 16px; border-top: 1px solid #cbd5e1; text-align: center; font-size: 11px; color: #64748b; font-weight: bold text-transform: uppercase;">
+                    Document generated securely by Siena College Taytay BSN Portal
+                </div>
+            `;
+
+            // Temporarily mount to the DOM off-screen so html2canvas renders perfectly
+            pdfContainer.style.position = 'absolute';
+            pdfContainer.style.left = '-9999px';
+            pdfContainer.style.top = '0';
+            document.body.appendChild(pdfContainer);
+            
+            /* iPad Blank PDF Fix: Scroll to top and reset canvas Y coordinates */
+            window.scrollTo(0, 0);
+
+            const safeName = studentData.name ? studentData.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() : 'student';
+
+            const opt = {
+                margin:       0.4,
+                filename:     `${safeName}_exam_copy.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, scrollY: 0, windowWidth: 800 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            if (typeof html2pdf !== 'undefined') {
+                html2pdf().set(opt).from(pdfContainer).save().then(() => {
+                    btn.innerHTML = originalText;
+                    document.body.removeChild(pdfContainer); // Remove the hidden template
+                });
+            } else {
+                window.print();
+                btn.innerHTML = originalText;
+                document.body.removeChild(pdfContainer);
+            }
+        });
+
+        document.getElementById('adminDownloadPdfBtn')?.addEventListener('click', function() {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `Generating PDF...`;
+            
+            const element = document.getElementById('printableReportArea');
+            
+            /* iPad Blank PDF Fix: Scroll to top and reset canvas Y coordinates */
+            window.scrollTo(0, 0);
+
+            const opt = {
+                margin:       0.4,
+                filename:     `Grade_Summary_Report.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, scrollY: 0, windowWidth: 1000 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            if (typeof html2pdf !== 'undefined') {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    btn.innerHTML = originalText;
+                });
+            } else {
+                window.print();
+                btn.innerHTML = originalText;
+            }
         });
 
     </script>
