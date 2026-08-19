@@ -216,6 +216,10 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     Download as PDF
                 </button>
+                <button id="studentPrintBtn" class="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Print Copy
+                </button>
                 <button onclick="location.reload()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
                     Take Another Exam
                 </button>
@@ -483,6 +487,10 @@
                     <h2 class="text-xl font-bold text-slate-800">Grade Summary Report</h2>
                     <div class="flex gap-3">
                         <button id="closeReportBtn" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium transition-colors border border-slate-200 bg-white">Close</button>
+                        <button id="adminPrintBtn" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg> 
+                            Print
+                        </button>
                         <button id="adminDownloadPdfBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg> 
                             Download PDF
@@ -491,23 +499,23 @@
                 </div>
 
                 <!-- Upgraded Professional Admin PDF Area -->
-                <div id="printableReportArea" class="text-black bg-white p-4 sm:p-8">
-                    <div class="text-center mb-8 border-b-4 border-slate-800 pb-6">
-                        <h1 class="text-4xl font-black uppercase tracking-widest text-slate-900" style="font-family: 'Times New Roman', Times, serif;">Siena College Taytay</h1>
-                        <h2 class="text-xl font-bold text-slate-700 mt-2 uppercase tracking-wide">College of Nursing - BSN Program</h2>
-                        <h3 class="text-lg font-semibold text-slate-600 mt-1">Official Grade Summary Report</h3>
-                        <p class="text-sm text-slate-500 mt-3 font-medium" id="printReportDate"></p>
+                <div id="printableReportArea" class="text-black bg-white p-4 sm:p-8" style="font-family: 'Arial', sans-serif;">
+                    <div class="text-center mb-8 border-b-4 border-slate-800 pb-6" style="border-bottom: 4px solid #1e293b;">
+                        <h1 class="text-4xl font-black uppercase tracking-widest text-slate-900" style="font-family: 'Times New Roman', Times, serif; font-size: 32px; font-weight: 900; margin-bottom: 8px;">Siena College Taytay</h1>
+                        <h2 class="text-xl font-bold text-slate-700 mt-2 uppercase tracking-wide" style="font-size: 18px; font-weight: bold; color: #334155; margin-bottom: 4px;">College of Nursing - BSN Program</h2>
+                        <h3 class="text-lg font-semibold text-slate-600 mt-1" style="font-size: 16px; font-weight: 600; color: #475569; margin-bottom: 12px;">Official Grade Summary Report</h3>
+                        <p class="text-sm text-slate-500 mt-3 font-medium" id="printReportDate" style="font-size: 12px; color: #64748b;"></p>
                     </div>
                     
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse border-2 border-slate-800">
+                        <table class="w-full text-left border-collapse border-2 border-slate-800" style="width: 100%; border: 2px solid #1e293b; border-collapse: collapse;">
                             <thead>
-                                <tr class="bg-slate-100 border-b-2 border-slate-800">
-                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 w-12 text-center uppercase">No.</th>
-                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 uppercase">Student Name</th>
-                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 uppercase">Course & Section</th>
-                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 text-center uppercase">Score</th>
-                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 uppercase">Feedback / Status</th>
+                                <tr class="bg-slate-100 border-b-2 border-slate-800" style="background-color: #f1f5f9; border-bottom: 2px solid #1e293b;">
+                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 w-12 text-center uppercase" style="border: 1px solid #94a3b8; padding: 12px; text-align: center; font-size: 14px;">No.</th>
+                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 uppercase" style="border: 1px solid #94a3b8; padding: 12px; font-size: 14px;">Student Name</th>
+                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 uppercase" style="border: 1px solid #94a3b8; padding: 12px; font-size: 14px;">Course & Section</th>
+                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 text-center uppercase" style="border: 1px solid #94a3b8; padding: 12px; text-align: center; font-size: 14px;">Score</th>
+                                    <th class="border border-slate-400 p-3 text-sm font-bold text-slate-900 uppercase" style="border: 1px solid #94a3b8; padding: 12px; font-size: 14px;">Feedback / Status</th>
                                 </tr>
                             </thead>
                             <tbody id="printReportTableBody" class="divide-y divide-slate-400 font-medium text-slate-800">
@@ -516,14 +524,14 @@
                         </table>
                     </div>
                     
-                    <div class="mt-16 text-sm text-slate-800 flex justify-between items-end">
-                        <div class="bg-slate-50 p-4 border border-slate-300 rounded">
-                            <p class="font-bold text-lg text-slate-900">Total Students: <span id="printTotalStudents" class="text-rose-800">0</span></p>
+                    <div class="mt-16 text-sm text-slate-800 flex justify-between items-end" style="margin-top: 60px; display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div class="bg-slate-50 p-4 border border-slate-300 rounded" style="background: #f8fafc; padding: 16px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                            <p class="font-bold text-lg text-slate-900" style="font-weight: bold; font-size: 16px;">Total Students: <span id="printTotalStudents" class="text-rose-800" style="color: #9f1239;">0</span></p>
                         </div>
-                        <div class="text-center">
-                            <div class="w-64 border-b border-slate-800 mx-auto"></div>
-                            <p class="mt-2 font-bold text-slate-900 uppercase tracking-wider text-xs">Professor / Instructor Signature</p>
-                            <p class="text-xs text-slate-500 mt-1">Date Signed: _______________</p>
+                        <div class="text-center" style="text-align: center;">
+                            <div class="w-64 border-b border-slate-800 mx-auto" style="width: 250px; border-bottom: 1px solid #1e293b; margin: 0 auto;"></div>
+                            <p class="mt-2 font-bold text-slate-900 uppercase tracking-wider text-xs" style="margin-top: 8px; font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px;">Professor / Instructor Signature</p>
+                            <p class="text-xs text-slate-500 mt-1" style="font-size: 11px; color: #64748b; margin-top: 4px;">Date Signed: _______________</p>
                         </div>
                     </div>
                 </div>
@@ -1627,131 +1635,13 @@
             }
         });
 
-        function showCheatWarning(message) {
-            if (!screens.exam.classList.contains('hidden')) {
-                cheatingWarningText.innerText = message;
-                dismissWarningBtn.classList.remove('hidden');
-                cheatingModal.classList.remove('hidden');
-            }
-        }
-
-        dismissWarningBtn.addEventListener('click', () => {
-            cheatingModal.classList.add('hidden');
+        // --- DIRECT BROWSER PRINT BUTTONS ---
+        document.getElementById('studentPrintBtn')?.addEventListener('click', function() {
+            window.print();
         });
-
-        // --- PDF GENERATION FOR IPAD/MOBILE SUPPORT ---
-        document.getElementById('studentDownloadPdfBtn')?.addEventListener('click', function() {
-            const btn = this;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating PDF...`;
-            
-            // Generate a hidden, highly professional template just for the PDF export
-            const pdfContainer = document.createElement('div');
-            pdfContainer.style.padding = '40px';
-            pdfContainer.style.background = 'white';
-            pdfContainer.style.color = 'black';
-            pdfContainer.style.fontFamily = 'Arial, sans-serif';
-            pdfContainer.style.width = '800px'; 
-            
-            const dateStr = new Date().toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-            let essaysHTML = '';
-            questionsData.forEach((q, index) => {
-                const ansText = studentAnswers[index] || "";
-                const wordCount = ansText.length > 0 && ansText !== "[No answer provided due to time limit]" ? ansText.split(/\s+/).length : 0;
-                essaysHTML += `
-                    <div style="margin-bottom: 24px; page-break-inside: avoid;">
-                        <p style="font-size: 15px; font-weight: bold; color: #111; margin-bottom: 10px; line-height: 1.4;">
-                            <span style="color: #9f1239;">Prompt ${index + 1}.</span> ${q.text}
-                        </p>
-                        <div style="font-size: 14px; color: #222; line-height: 1.6; padding: 16px; background-color: #f8fafc; border-left: 4px solid #9f1239; border-radius: 4px; white-space: pre-wrap; font-family: 'Times New Roman', serif;">${ansText || '<i>No Answer Submitted</i>'}</div>
-                        <p style="text-align: right; font-size: 11px; color: #666; margin-top: 6px; font-weight: bold;">Word count: ${wordCount}</p>
-                    </div>
-                `;
-            });
-
-            pdfContainer.innerHTML = `
-                <div style="text-align: center; border-bottom: 3px solid #1e293b; padding-bottom: 16px; margin-bottom: 30px;">
-                    <h1 style="font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #0f172a; margin: 0; font-family: 'Times New Roman', serif;">Siena College Taytay</h1>
-                    <h2 style="font-size: 16px; font-weight: 600; color: #334155; margin: 6px 0 0 0; text-transform: uppercase;">College of Nursing - BSN Program</h2>
-                    <h3 style="font-size: 14px; font-weight: 500; color: #64748b; margin: 4px 0 0 0;">Official Essay Examination Record</h3>
-                </div>
-
-                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 32px; background: #fff1f2; padding: 20px; border-radius: 8px; border: 1px solid #fecdd3; font-size: 14px; color: #0f172a;">
-                    <div style="width: 48%; margin-bottom: 12px;"><strong>Student Name:</strong> ${studentData.name}</div>
-                    <div style="width: 48%; margin-bottom: 12px;"><strong>Date Taken:</strong> ${dateStr}</div>
-                    <div style="width: 48%; margin-bottom: 12px;"><strong>Course & Year:</strong> ${studentData.course} ${studentData.year}</div>
-                    <div style="width: 48%; margin-bottom: 12px;"><strong>Section:</strong> ${studentData.section}</div>
-                    <div style="width: 48%; margin-bottom: 0;"><strong>Status:</strong> Submitted for Grading</div>
-                    <div style="width: 48%; margin-bottom: 0;"><strong>Exam Title:</strong> ${studentData.examTitle}</div>
-                </div>
-
-                <div style="border-top: 1px solid #e2e8f0; padding-top: 24px;">
-                    ${essaysHTML}
-                </div>
-
-                <div style="margin-top: 50px; padding-top: 16px; border-top: 1px solid #cbd5e1; text-align: center; font-size: 11px; color: #64748b; font-weight: bold text-transform: uppercase;">
-                    Document generated securely by Siena College Taytay BSN Portal
-                </div>
-            `;
-
-            // Temporarily mount to the DOM off-screen so html2canvas renders perfectly
-            pdfContainer.style.position = 'absolute';
-            pdfContainer.style.left = '-9999px';
-            pdfContainer.style.top = '0';
-            document.body.appendChild(pdfContainer);
-            
-            /* iPad Blank PDF Fix: Scroll to top and reset canvas Y coordinates */
-            window.scrollTo(0, 0);
-
-            const safeName = studentData.name ? studentData.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() : 'student';
-
-            const opt = {
-                margin:       0.4,
-                filename:     `${safeName}_exam_copy.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, scrollY: 0, windowWidth: 800 },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-
-            if (typeof html2pdf !== 'undefined') {
-                html2pdf().set(opt).from(pdfContainer).save().then(() => {
-                    btn.innerHTML = originalText;
-                    document.body.removeChild(pdfContainer); // Remove the hidden template
-                });
-            } else {
-                window.print();
-                btn.innerHTML = originalText;
-                document.body.removeChild(pdfContainer);
-            }
-        });
-
-        document.getElementById('adminDownloadPdfBtn')?.addEventListener('click', function() {
-            const btn = this;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `Generating PDF...`;
-            
-            const element = document.getElementById('printableReportArea');
-            
-            /* iPad Blank PDF Fix: Scroll to top and reset canvas Y coordinates */
-            window.scrollTo(0, 0);
-
-            const opt = {
-                margin:       0.4,
-                filename:     `Grade_Summary_Report.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, scrollY: 0, windowWidth: 1000 },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-
-            if (typeof html2pdf !== 'undefined') {
-                html2pdf().set(opt).from(element).save().then(() => {
-                    btn.innerHTML = originalText;
-                });
-            } else {
-                window.print();
-                btn.innerHTML = originalText;
-            }
+        
+        document.getElementById('adminPrintBtn')?.addEventListener('click', function() {
+            window.print();
         });
 
     </script>
